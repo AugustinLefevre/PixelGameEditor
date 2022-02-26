@@ -11,9 +11,9 @@ public class Main {
 	private Group root;
 	private Scene scene;
 	private Stage stage;
-	public Main(int width, int height) throws FileNotFoundException {
+	public Main() throws FileNotFoundException {
 		root = new Group();
-	    scene = new Scene(root, width, height, Color.WHITESMOKE);
+	    scene = new Scene(root, Color.WHITESMOKE);
 	    
 	    root.getChildren().add(MenuPanel.getInstance(root).getMenuBar());
 	}
