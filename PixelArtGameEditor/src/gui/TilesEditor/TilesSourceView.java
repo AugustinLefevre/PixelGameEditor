@@ -4,7 +4,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import javafx.application.Platform;
 import javafx.event.EventHandler;
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -25,6 +27,7 @@ final class TilesSourceView extends Canvas{
 	private Image image;
 	public TilesSourceView() {
 		super(512, 512);
+		robot = new Robot();
 		gc = getGraphicsContext2D();
 		gc.setImageSmoothing(false);
 		this.tilesSourceViewCursor = TilesSourceViewCursor.getInstance();
@@ -33,18 +36,21 @@ final class TilesSourceView extends Canvas{
 		
 		Runnable sheduledTask = () -> {
 			System.out.println("jkjjk");
-		//	if(mouseIsIn) {
+			Platform.runLater(()->{
 				try {
-					this.tilesSourceViewCursor.setPosition(robot.getMousePosition());
+					Point2D pos = robot.getMousePosition();
+					tilesSourceViewCursor.setPosition(pos);
 				}catch(Exception e){
 					System.out.println(e);
-				}
+				}});
+		//	if(mouseIsIn) {
+				
 				
 		//	}
 			
 		};
-		ses.scheduleWithFixedDelay(sheduledTask, 0, 1000, TimeUnit.MILLISECONDS);
-		//ses.scheduleAtFixedRate(sheduledTask, 0, 1000, TimeUnit.MILLISECONDS);
+		//ses.scheduleWithFixedDelay(sheduledTask, 0, 1000, TimeUnit.MILLISECONDS);
+		ses.scheduleAtFixedRate(sheduledTask, 0, 1000, TimeUnit.MILLISECONDS);
 		addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 
 			@Override
