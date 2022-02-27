@@ -121,6 +121,7 @@ public class TilesManager{
 		TilesSourceView tsv = TilesSourceView.getInstance();
 		tsv.displaySource(ts.getTilesSourceImage().getImage());
 		mainDisplayer.getChildren().add(tsv);
+		mainDisplayer.getChildren().add(TilesSourceViewCursor.getInstance());
 	}
 	
 	public static TilesManager getInstance() {

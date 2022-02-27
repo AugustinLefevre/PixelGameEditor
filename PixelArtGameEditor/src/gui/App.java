@@ -14,7 +14,6 @@ public class App extends Application{
 		Main mainFrame = new Main();
 		stage.setTitle("Pixel Art Game Editor");
 	    stage.setScene(mainFrame.getScene());
-	    //stage.setFullScreen(true);
 	    stage.setMaximized(true);
 	    mainFrame.setStage(stage);
 	    stage.show(); 
