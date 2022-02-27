@@ -25,8 +25,8 @@ public class TilesSourceViewCursor extends ImageView {
 		
 	}
 	public void setPosition(Point2D position) {
-		setX(position.getX());
-		setY(position.getY());
+//		setX(position.getX());
+//		setY(position.getY());
 		System.out.println("pos");
 	}
 	public void switchVisibility(boolean visibility) {

@@ -27,19 +27,24 @@ final class TilesSourceView extends Canvas{
 		super(512, 512);
 		gc = getGraphicsContext2D();
 		gc.setImageSmoothing(false);
-		tilesSourceViewCursor = TilesSourceViewCursor.getInstance();
+		this.tilesSourceViewCursor = TilesSourceViewCursor.getInstance();
 		mouseInScene();
 		ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
 		
 		Runnable sheduledTask = () -> {
 			System.out.println("jkjjk");
 		//	if(mouseIsIn) {
+				try {
+					this.tilesSourceViewCursor.setPosition(robot.getMousePosition());
+				}catch(Exception e){
+					System.out.println(e);
+				}
 				
-				//tilesSourceViewCursor.setPosition(robot.getMousePosition());
 		//	}
 			
 		};
-		ses.scheduleAtFixedRate(sheduledTask, 0, 1000, TimeUnit.MILLISECONDS);
+		ses.scheduleWithFixedDelay(sheduledTask, 0, 1000, TimeUnit.MILLISECONDS);
+		//ses.scheduleAtFixedRate(sheduledTask, 0, 1000, TimeUnit.MILLISECONDS);
 		addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 
 			@Override
