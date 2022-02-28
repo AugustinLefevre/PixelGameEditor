@@ -31,26 +31,6 @@ final class TilesSourceView extends Canvas{
 		gc = getGraphicsContext2D();
 		gc.setImageSmoothing(false);
 		this.tilesSourceViewCursor = TilesSourceViewCursor.getInstance();
-		mouseInScene();
-		ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
-		
-		Runnable sheduledTask = () -> {
-			System.out.println("jkjjk");
-			Platform.runLater(()->{
-				try {
-					Point2D pos = robot.getMousePosition();
-					tilesSourceViewCursor.setPosition(pos);
-				}catch(Exception e){
-					System.out.println(e);
-				}});
-		//	if(mouseIsIn) {
-				
-				
-		//	}
-			
-		};
-		//ses.scheduleWithFixedDelay(sheduledTask, 0, 1000, TimeUnit.MILLISECONDS);
-		ses.scheduleAtFixedRate(sheduledTask, 0, 1000, TimeUnit.MILLISECONDS);
 		addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 
 			@Override
@@ -68,7 +48,6 @@ final class TilesSourceView extends Canvas{
 					if(deltaY < 0)
 						zoomFactor = 2 - zoomFactor;
 					double zoom = TilesSourceView.this.getWidth() * zoomFactor;
-					//System.out.println("hello" + zoom);
 					TilesSourceView.this.setWidth(TilesSourceView.this.getWidth() * zoomFactor);
 					TilesSourceView.this.setHeight(TilesSourceView.this.getHeight() * zoomFactor);
 					TilesSourceView.this.gc.drawImage(TilesSourceView.this.image, 0, 0, zoom, zoom);
@@ -77,25 +56,7 @@ final class TilesSourceView extends Canvas{
 			}
 		});
 	}
-	/**
-	 * Update boolean mouseIsIn
-	 */
-	public void mouseInScene() {
-		addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
-			public void handle(MouseEvent e) {
-				System.out.println("enter");
-				tilesSourceViewCursor.switchVisibility(true);
-				mouseIsIn = true;
-			}
-		});
-		addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
-			public void handle(MouseEvent e) {
-				System.out.println("exit");
-				tilesSourceViewCursor.switchVisibility(false);
-				mouseIsIn = true;
-			}
-		});
-	}
+	
 	/**
 	 * display the tiles source image in the tiles source viewer 
 	 * @param image

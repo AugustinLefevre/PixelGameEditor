@@ -8,6 +8,7 @@ import controller.TilesSourceController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
@@ -20,7 +21,7 @@ public class TilesManager{
 	private TilesSourceController tilesSourceController;
 	private VBox leftDisplayer;
 	private VBox tilesSourcesDisplayer;
-	private static VBox mainDisplayer;
+	private static Group tilesSourceCanvas;
 	private Button buttonImport;
 	private static BorderPane bpane;
 	private static TilesManager instance;
@@ -38,22 +39,25 @@ public class TilesManager{
 		bpane.setPrefSize(800, 600);
 		bpane.setStyle("-fx-background-color: #2f4f4f");
 		
-		mainDisplayer = new VBox();
-		mainDisplayer.setPrefSize(500, 500);
-		mainDisplayer.setMaxSize(500, 500);
-		mainDisplayer.setStyle("-fx-background-color: #8f8f8f");
+		tilesSourceCanvas = new Group();
+		tilesSourceCanvas.setStyle("-fx-background-color: #8f8f8f");
+		
+		BorderPane tilesSourceDisplayer = new BorderPane();
+		tilesSourceDisplayer.getChildren().addAll(tilesSourceCanvas, TilesSourceViewCursor.getInstance());
 		ScrollPane mainScrollPane = new ScrollPane();
-		mainScrollPane.setContent(mainDisplayer);
+		mainScrollPane.setContent(tilesSourceDisplayer);
 		bpane.setCenter(mainScrollPane);
 		
 		this.leftDisplayer = new VBox();
 		this.leftDisplayer.setSpacing(10);
 		this.leftDisplayer.setStyle("-fx-background-color: #2f2f4f");
+		
 		this.tilesSourcesDisplayer = new VBox();
 		this.tilesSourcesDisplayer.setSpacing(10);
 		this.tilesSourcesDisplayer.setPrefHeight(250);
 		this.tilesSourcesDisplayer.setMaxHeight(250);
 		this.tilesSourcesDisplayer.setStyle("-fx-background-color: #8f8f8f");
+		
 		ScrollPane scrollPane = new ScrollPane();
 		scrollPane.setContent(this.tilesSourcesDisplayer);
 		
@@ -62,7 +66,6 @@ public class TilesManager{
 			public void handle(ActionEvent arg0) {
 				File file = fileChooser.showOpenDialog(null);
 				try {
-					//TilesSource ts = TilesManager.this.tileSourceManager.addSource(file.getAbsolutePath());
 					TilesSource ts = tilesSourceController.addTilesSource(file.getAbsolutePath());
 					setView(ts);
 					leftColumnRefresh();
@@ -117,11 +120,10 @@ public class TilesManager{
 	 * @throws FileNotFoundException
 	 */
 	public static void setView(TilesSource ts) throws FileNotFoundException {
-		mainDisplayer.getChildren().clear();
+		tilesSourceCanvas.getChildren().clear();
 		TilesSourceView tsv = TilesSourceView.getInstance();
 		tsv.displaySource(ts.getTilesSourceImage().getImage());
-		mainDisplayer.getChildren().add(tsv);
-		mainDisplayer.getChildren().add(TilesSourceViewCursor.getInstance());
+		tilesSourceCanvas.getChildren().add(tsv);
 	}
 	
 	public static TilesManager getInstance() {
