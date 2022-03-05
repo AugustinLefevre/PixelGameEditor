@@ -19,7 +19,7 @@ public class TilesSourceViewCursor extends ImageView {
 		try {
 			Robot robot =  new Robot();
 			String path = System.getProperty("user.dir") + "\\resources";
-			InputStream stream = new FileInputStream(path + "\\tilesSelectorCursor512.png");
+			InputStream stream = new FileInputStream(path + "\\tilesSelectorCursor256.png");
 			Image image = new Image(stream);
 			setImage(image);
 			setFitWidth(50);
@@ -46,8 +46,12 @@ public class TilesSourceViewCursor extends ImageView {
 	}
 	public void setPosition(Point2D position) {
 		try {
-			double posX = position.getX() - getParent().getScene().getWindow().getX() - getParent().localToScene(0, 0).getX() - getScene().getX();
-			double posY = position.getY() - getParent().getScene().getWindow().getY() - getParent().localToScene(0, 0).getY() - getScene().getY();
+			double windowPosX = (getScene()==null)?0 : getScene().getWindow().getX();
+			double windowPosY = (getScene()==null)?0 : getScene().getWindow().getY();
+			double scenePosX = (getScene()==null)?0 : getScene().getX();
+			double scenePosY = (getScene()==null)?0 : getScene().getY();
+			double posX = position.getX() - windowPosX - localToScene(0, 0).getX() - scenePosX;
+			double posY = position.getY() - windowPosY - localToScene(0, 0).getY() - scenePosY;
 			setX(posX);
 			setY(posY);
 		}catch(Exception e) {

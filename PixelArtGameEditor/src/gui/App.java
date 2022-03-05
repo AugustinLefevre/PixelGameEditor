@@ -1,5 +1,6 @@
 package gui;
 
+import controller.PrefsController;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -11,12 +12,14 @@ public class App extends Application{
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		Main mainFrame = new Main();
+		Main mainFrame = Main.getInstance();
 		stage.setTitle("Pixel Art Game Editor");
 	    stage.setScene(mainFrame.getScene());
 	    stage.setMaximized(true);
 	    mainFrame.setStage(stage);
-	    stage.show(); 
+	    stage.show();
+	    
+	    
 	}
 
 }

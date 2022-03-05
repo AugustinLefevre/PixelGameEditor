@@ -4,8 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import model.TilesSource;
-import model.TilesSourceDatabase;
+import gui.Main;
+import model.tiles.TilesSource;
+import model.tiles.TilesSourceDatabase;
 
 public class TilesSourceController {
 	private TilesSourceDatabase db = new TilesSourceDatabase();
@@ -31,10 +32,12 @@ public class TilesSourceController {
 	}
 	public void saveToFile(File file) throws IOException {
 		db.saveToFile(file);
+		PrefsController.getInstance(Main.getInstance().getRoot()).savePath(file.getAbsolutePath());;
 	}
 	public void loadFromFile(File file) throws IOException {
 		db.loadFromFile(file);
 	}
+	
 	public static TilesSourceController getInstance() {
 		if(instance == null) {
 			return new TilesSourceController();

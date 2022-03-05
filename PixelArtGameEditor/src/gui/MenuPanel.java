@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import gui.TilesEditor.TilesManager;
+import gui.popup.new_project.NewProject;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -23,14 +24,16 @@ public class MenuPanel{
 	private MenuItem openFile;
 	private MenuItem saveFile;
 	private TilesManager tilesManager;
+//	private NewProject np;
 	private MenuItem saveAs;
 	private CheckMenuItem tilesManagerItem;
 	private static MenuPanel instance;
 	
 	private MenuPanel(Group root) throws FileNotFoundException {
 		this.tilesManager = TilesManager.getInstance();
-		//SeparatorMenuItem separator = new SeparatorMenuItem();
+		//this.np = NewProject.getInstance();
 		root.getChildren().add(this.tilesManager.getBorderPane());
+		//root.getChildren().add(this.np);
 		this.menuFile = new Menu("File");
 		this.newFile = new MenuItem("New");
 		this.openFile = new MenuItem("Open File");
@@ -105,6 +108,7 @@ public class MenuPanel{
 		this.tilesManagerItem.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent e) {
 				tilesManager.setVisibility(tilesManagerItem.isSelected());
+				//np.setVisible(false);
 			}
 		});
 	}

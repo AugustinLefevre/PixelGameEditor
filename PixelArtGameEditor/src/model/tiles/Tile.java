@@ -1,4 +1,4 @@
-package model;
+package model.tiles;
 
 import com.sun.javafx.geom.Point2D;
 

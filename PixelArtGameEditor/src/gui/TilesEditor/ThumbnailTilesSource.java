@@ -6,7 +6,7 @@ import javafx.event.EventHandler;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import model.TilesSource;
+import model.tiles.TilesSource;
 
 public class ThumbnailTilesSource extends ImageView {
 	public ThumbnailTilesSource(TilesSource ts) throws FileNotFoundException {

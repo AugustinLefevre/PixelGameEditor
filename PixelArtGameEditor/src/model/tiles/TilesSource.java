@@ -1,4 +1,4 @@
-package model;
+package model.tiles;
 
 import java.io.Serializable;
 

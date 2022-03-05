@@ -14,10 +14,10 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
-import model.TilesSource;
+import model.tiles.TilesSource;
 
 public class TilesManager{
-	private BorderPane borderPane;
+	//private BorderPane borderPane;
 	private TilesSourceController tilesSourceController;
 	private VBox leftDisplayer;
 	private VBox tilesSourcesDisplayer;
@@ -66,9 +66,11 @@ public class TilesManager{
 			public void handle(ActionEvent arg0) {
 				File file = fileChooser.showOpenDialog(null);
 				try {
-					TilesSource ts = tilesSourceController.addTilesSource(file.getAbsolutePath());
-					setView(ts);
-					leftColumnRefresh();
+					if(file != null) {
+						TilesSource ts = tilesSourceController.addTilesSource(file.getAbsolutePath());
+						setView(ts);
+						leftColumnRefresh();
+					}
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				}
@@ -77,9 +79,9 @@ public class TilesManager{
 		this.leftDisplayer.getChildren().add(buttonImport);
 		this.leftDisplayer.getChildren().add(scrollPane);
 		bpane.setLeft(leftDisplayer);
-		bpane.setVisible(true);
+		bpane.setVisible(false);
 		leftColumnRefresh();
-		this.borderPane = bpane;
+		//this.borderPane = bpane;
 	}
 	/**
 	 * refresh the tiles container menu on the left of the tiles manager
@@ -98,14 +100,14 @@ public class TilesManager{
 	 * @return 
 	 */
 	public BorderPane getBorderPane() {
-		return borderPane;
+		return bpane;
 	}
 	/**
 	 * display the Tiles manager or not
 	 * @param bool Diplay if true
 	 */
 	public void setVisibility(boolean bool) {
-		this.borderPane.setVisible(bool);
+		TilesManager.bpane.setVisible(bool);
 	}
 	/**
 	 * get the controller
