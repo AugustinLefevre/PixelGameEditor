@@ -2,7 +2,6 @@ package gui;
 
 import java.io.IOException;
 
-import controller.PrefsController;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -19,7 +18,6 @@ public class Main {
 	    scene = new Scene(root, Color.WHITESMOKE);
 	    
 	    root.getChildren().add(MenuPanel.getInstance(root).getMenuBar());
-	    PrefsController.getInstance(root).loadProject();
 	}
 	public Group getRoot() {
 		return root;

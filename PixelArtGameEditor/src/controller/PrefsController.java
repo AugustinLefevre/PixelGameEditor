@@ -3,6 +3,7 @@ package controller;
 import java.io.File;
 import java.io.IOException;
 
+import gui.TilesEditor.TilesManager;
 import gui.popup.new_project.NewProject;
 import javafx.scene.Group;
 import model.properties.PreferenciesDB;
@@ -32,18 +33,24 @@ public class PrefsController {
 	 * a fixer
 	 * @throws IOException
 	 */
-	public void loadProject() throws IOException {
+	public void openAutoProject() throws IOException {
 		// prefs File is not empty or and process is not on error
+		String projectPath = this.prefs.loadPathFromPrefs();
+		this.prefsFile = new File(this.prefs.loadPathFromPrefs());
 		if(this.prefsFile != null) {
 			newProjectPopup.setVisibility(false);
+			
 			TilesSourceController.getInstance().loadFromFile(this.prefsFile);
+			//
+			TilesManager.getInstance().leftColumnRefresh();
 		}else {
 			
-			System.out.println("Popup new project");
 			newProjectPopup.setVisible(true);
+			
 		}
 		
 	}
+
 	public void savePath(String path) throws IOException {
 		this.prefs.savePathInPrefs(path);
 	}

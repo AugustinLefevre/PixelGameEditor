@@ -79,7 +79,7 @@ public class TilesManager{
 		this.leftDisplayer.getChildren().add(buttonImport);
 		this.leftDisplayer.getChildren().add(scrollPane);
 		bpane.setLeft(leftDisplayer);
-		bpane.setVisible(false);
+		bpane.setVisible(true);
 		leftColumnRefresh();
 		//this.borderPane = bpane;
 	}
@@ -88,6 +88,7 @@ public class TilesManager{
 	 * @throws FileNotFoundException
 	 */
 	public void leftColumnRefresh() throws FileNotFoundException {
+		System.out.println("refresh");
 		this.tilesSourcesDisplayer.getChildren().clear();
 		
 		List<TilesSource> tilesSources = this.tilesSourceController.getTilesSources();

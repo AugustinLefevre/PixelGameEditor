@@ -35,7 +35,7 @@ final class TilesSourceView extends Canvas{
 
 			@Override
 			public void handle(MouseEvent arg0) {
-				System.out.println("hello");
+				// set tile popup
 				
 			}
 			

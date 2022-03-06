@@ -17,8 +17,8 @@ public class TilesSourceDatabase {
 	public TilesSourceDatabase() {
 		tilesSources = new LinkedList<TilesSource>();
 	}
-	public void addTilesSource(TilesSource person) {
-		tilesSources.add(person);
+	public void addTilesSource(TilesSource ts) {
+		tilesSources.add(ts);
 	}
 	public void removeTilesSource(int index) {
 		tilesSources.remove(index);
@@ -43,6 +43,8 @@ public class TilesSourceDatabase {
 			TilesSource[] TSources = (TilesSource[])ois.readObject();
 			tilesSources.clear();
 			tilesSources.addAll(Arrays.asList(TSources));
+			System.out.println(tilesSources.size());
+			System.out.println(tilesSources.get(0).getPath());
 			
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
