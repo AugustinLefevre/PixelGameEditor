@@ -37,13 +37,13 @@ public class TilesSourceController {
 		PrefsController.getInstance(Main.getInstance().getRoot()).savePath(file.getAbsolutePath());
 	}
 	public void loadFromFile(File file) throws IOException {
-		System.out.println("load file " + file.getName());
 		db.loadFromFile(file);
 	}
 	
 	public static TilesSourceController getInstance() {
 		if(instance == null) {
-			return new TilesSourceController();
+			instance = new TilesSourceController();
+			return instance;
 		}
 		return instance;
 	}

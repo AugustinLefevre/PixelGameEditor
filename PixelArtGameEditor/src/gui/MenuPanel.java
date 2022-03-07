@@ -119,7 +119,8 @@ public class MenuPanel{
 	public static MenuPanel getInstance(Group root) {
 		if(instance == null) {
 			try {
-				return new MenuPanel(root);
+				instance = new MenuPanel(root);
+				return instance;
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}

@@ -16,8 +16,8 @@ public class Main {
 	public Main() throws IOException {
 		root = new Group();
 	    scene = new Scene(root, Color.WHITESMOKE);
-	    
 	    root.getChildren().add(MenuPanel.getInstance(root).getMenuBar());
+	    
 	}
 	public Group getRoot() {
 		return root;
@@ -33,7 +33,8 @@ public class Main {
 	}
 	public static Main getInstance() throws IOException {
 		if(instance == null) {
-			return new Main();
+			instance = new Main();
+			return instance;
 		}else {
 			return instance;
 		}

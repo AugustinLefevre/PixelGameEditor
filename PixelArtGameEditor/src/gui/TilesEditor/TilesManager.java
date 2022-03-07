@@ -88,7 +88,6 @@ public class TilesManager{
 	 * @throws FileNotFoundException
 	 */
 	public void leftColumnRefresh() throws FileNotFoundException {
-		System.out.println("refresh");
 		this.tilesSourcesDisplayer.getChildren().clear();
 		
 		List<TilesSource> tilesSources = this.tilesSourceController.getTilesSources();
@@ -132,7 +131,8 @@ public class TilesManager{
 	public static TilesManager getInstance() {
 		if(instance == null) {
 			try {
-				return new TilesManager();
+				instance = new TilesManager();
+				return instance;
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

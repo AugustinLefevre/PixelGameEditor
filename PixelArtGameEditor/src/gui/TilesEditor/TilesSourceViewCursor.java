@@ -67,7 +67,8 @@ public class TilesSourceViewCursor extends ImageView {
 	}
 	public static TilesSourceViewCursor getInstance() {
 		if(instance == null) {
-			return new TilesSourceViewCursor();
+			instance = new TilesSourceViewCursor();
+			return instance;
 		}
 		return instance;
 	}

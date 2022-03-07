@@ -71,7 +71,8 @@ final class TilesSourceView extends Canvas{
 	 */
 	public static TilesSourceView getInstance() {
 		if(instance == null) {
-			return new TilesSourceView();
+			instance = new TilesSourceView();
+			return instance;
 		}
 		return instance;
 	}

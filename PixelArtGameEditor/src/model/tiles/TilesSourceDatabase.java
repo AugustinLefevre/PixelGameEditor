@@ -43,8 +43,6 @@ public class TilesSourceDatabase {
 			TilesSource[] TSources = (TilesSource[])ois.readObject();
 			tilesSources.clear();
 			tilesSources.addAll(Arrays.asList(TSources));
-			System.out.println(tilesSources.size());
-			System.out.println(tilesSources.get(0).getPath());
 			
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();

@@ -24,7 +24,8 @@ public class PrefsController {
 	}
 	public static PrefsController getInstance(Group root) throws IOException {
 		if(instance == null) {
-			return new PrefsController(root);
+			instance = new PrefsController(root);
+			return instance;
 		}else {
 			return instance;
 		}

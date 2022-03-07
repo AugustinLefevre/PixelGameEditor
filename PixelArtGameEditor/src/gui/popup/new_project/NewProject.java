@@ -116,7 +116,8 @@ public class NewProject extends BorderPane{
 	}
 	public static NewProject getInstance() {
 		if(instance == null) {
-			return new NewProject();
+			instance = new NewProject();
+			return instance;
 		}
 		return instance;
 	}
