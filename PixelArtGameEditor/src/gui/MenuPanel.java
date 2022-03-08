@@ -66,13 +66,14 @@ public class MenuPanel{
 	 */
 	private void setAction() {
 		FileChooser fileChooser = new FileChooser();
-		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Tiles source file", "*.tsf"));
+		// mpag My Pixel Art Game
+		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Tiles source file", "*.mpag"));
 		this.saveFile.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent arg0) {
 				File file = fileChooser.showSaveDialog(null);
 				if(file != null) {
 					try {
-						MenuPanel.this.tilesManager.getTilesSourcesController().saveToFile(file.getAbsoluteFile());
+						MenuPanel.this.tilesManager.getProjectController().saveToFile(file.getAbsoluteFile());
 					} catch (IOException e1) {
 						System.out.println(e1.getMessage());
 					}
@@ -84,7 +85,7 @@ public class MenuPanel{
 				File file = fileChooser.showSaveDialog(null);
 				if(file != null) {
 					try {
-						MenuPanel.this.tilesManager.getTilesSourcesController().saveToFile(file.getAbsoluteFile());
+						MenuPanel.this.tilesManager.getProjectController().saveToFile(file.getAbsoluteFile());
 					} catch (IOException e1) {
 						System.out.println(e1.getMessage());
 					}
@@ -96,7 +97,7 @@ public class MenuPanel{
 				File file = fileChooser.showOpenDialog(null);
 				if(file != null) {
 					try {
-						MenuPanel.this.tilesManager.getTilesSourcesController().loadFromFile(file);
+						MenuPanel.this.tilesManager.getProjectController().loadFromFile(file);
 						MenuPanel.this.tilesManager.leftColumnRefresh();
 					} catch (IOException e1) {
 						System.out.println(e1.getMessage());

@@ -6,6 +6,7 @@ import java.io.IOException;
 import gui.TilesEditor.TilesManager;
 import gui.popup.new_project.NewProject;
 import javafx.scene.Group;
+import model.project.Project;
 import model.properties.PreferenciesDB;
 
 public class PrefsController {
@@ -41,7 +42,7 @@ public class PrefsController {
 			this.prefsFile = new File(projectPath);
 			if(this.prefsFile != null) {
 				newProjectPopup.setVisibility(false);
-				TilesSourceController.getInstance().loadFromFile(this.prefsFile);
+				ProjectController.getInstance().loadFromFile(this.prefsFile);
 				TilesManager.getInstance().leftColumnRefresh();
 			}
 		}else {

@@ -13,8 +13,8 @@ import java.util.List;
 
 public class TilesSourceDatabase {
 	private List<TilesSource> tilesSources;
-	
-	public TilesSourceDatabase() {
+	private static TilesSourceDatabase instance;
+	private TilesSourceDatabase() {
 		tilesSources = new LinkedList<TilesSource>();
 	}
 	public void addTilesSource(TilesSource ts) {
@@ -49,5 +49,13 @@ public class TilesSourceDatabase {
 		}
 		
 		ois.close();
+	}
+	public static TilesSourceDatabase getInstance() {
+		if(instance == null) {
+			instance = new TilesSourceDatabase();
+			return instance;
+		}else {
+			return instance;
+		}
 	}
 }

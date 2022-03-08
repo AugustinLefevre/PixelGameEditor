@@ -1,6 +1,11 @@
 package model.properties;
 
-public class ProjectProperties {
+import java.io.Serializable;
+
+import model.project.Project;
+
+public class ProjectProperties implements Serializable {
+	private static final long serialVersionUID = 3846525459406027524L;
 	private static ProjectProperties instance;
 	private String projectName;
 	private int tileSize;
@@ -17,12 +22,14 @@ public class ProjectProperties {
 	public void setTileSize(int tileSize) {
 		this.tileSize = tileSize;
 	}
-	
+	public void setProperties(ProjectProperties pp) {
+		instance = pp;
+	}
 	public static ProjectProperties getInstance() {
 		if(instance == null) {
-			return new ProjectProperties();
-		}else {
-			return instance;
+			instance = new ProjectProperties();
 		}
+		return instance;
+		
 	}
 }

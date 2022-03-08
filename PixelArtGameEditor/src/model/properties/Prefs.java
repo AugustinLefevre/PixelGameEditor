@@ -3,6 +3,7 @@ package model.properties;
 import java.io.Serializable;
 
 public class Prefs implements Serializable {
+	private static final long serialVersionUID = 7812480018812295809L;
 	private String savedPath;
 	private static Prefs instance;
 
@@ -16,9 +17,9 @@ public class Prefs implements Serializable {
 	
 	public static Prefs getInstance() {
 		if(instance == null) {
-			return new Prefs();
-		}else {
-			return instance;
+			instance = new Prefs();
 		}
+		return instance;
+		
 	}
 }

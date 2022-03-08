@@ -4,7 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
 
-import controller.TilesSourceController;
+import controller.ProjectController;
+//import controller.TilesSourceController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -17,7 +18,8 @@ import javafx.stage.FileChooser;
 import model.tiles.TilesSource;
 
 public class TilesManager{
-	private TilesSourceController tilesSourceController;
+	//private TilesSourceController tilesSourceController;
+	private ProjectController projectController;
 	private VBox leftDisplayer;
 	private VBox tilesSourcesDisplayer;
 	private static Group tilesSourceCanvas;
@@ -30,7 +32,8 @@ public class TilesManager{
 	 */
 	private TilesManager() throws FileNotFoundException {
 		FileChooser fileChooser = new FileChooser();
-		tilesSourceController = TilesSourceController.getInstance();
+		//tilesSourceController = TilesSourceController.getInstance();
+		projectController = ProjectController.getInstance();
 		fileChooser.setTitle("Import tiles source");
 		
 		bpane = new BorderPane();
@@ -66,7 +69,8 @@ public class TilesManager{
 				File file = fileChooser.showOpenDialog(null);
 				try {
 					if(file != null) {
-						TilesSource ts = tilesSourceController.addTilesSource(file.getAbsolutePath());
+						//TilesSource ts = tilesSourceController.addTilesSource(file.getAbsolutePath());
+						TilesSource ts = projectController.addTilesSource(file.getAbsolutePath());
 						setView(ts);
 						leftColumnRefresh();
 					}
@@ -86,12 +90,15 @@ public class TilesManager{
 	 * @throws FileNotFoundException
 	 */
 	public void leftColumnRefresh() throws FileNotFoundException {
-		this.tilesSourcesDisplayer.getChildren().clear();
 		
-		List<TilesSource> tilesSources = this.tilesSourceController.getTilesSources();
-		for(TilesSource ts : tilesSources) {
-			this.tilesSourcesDisplayer.getChildren().add(new ThumbnailTilesSource(ts));
-		}
+		if(this.projectController.getTilesSource() != null) {
+			this.tilesSourcesDisplayer.getChildren().clear();
+			List<TilesSource> tilesSources = this.projectController.getTilesSource();
+			for(TilesSource ts : tilesSources) {
+				this.tilesSourcesDisplayer.getChildren().add(new ThumbnailTilesSource(ts));
+			}
+		}	
+		
 	}
 	/**
 	 * get the borderPane of the Tiles Manager
@@ -111,8 +118,8 @@ public class TilesManager{
 	 * get the controller
 	 * @return
 	 */
-	public TilesSourceController getTilesSourcesController() {
-		return this.tilesSourceController;
+	public ProjectController getProjectController() {
+		return this.projectController;
 	}
 	/**
 	 * modify the Tiles Source view
@@ -130,7 +137,6 @@ public class TilesManager{
 		if(instance == null) {
 			try {
 				instance = new TilesManager();
-				return instance;
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}

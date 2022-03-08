@@ -20,7 +20,7 @@ public class PreferenciesDB {
 	private Prefs prefs;
 	private File file;
 	private String resourcePath;
-	private OutputStream stream;
+	//private OutputStream stream;
 	
 	private PreferenciesDB() throws FileNotFoundException {
 		this.resourcePath = System.getProperty("user.dir") + "\\resources";
@@ -37,32 +37,38 @@ public class PreferenciesDB {
 	}
 	public static PreferenciesDB getInstance() throws FileNotFoundException {
 		if(instance == null) {
-			return new PreferenciesDB();
-		}else {
-			return instance;
+			instance = new PreferenciesDB();
 		}
+		return instance;
+		
 	}
 
 
 	
 	public String loadPathFromPrefs() throws IOException {
 		FileInputStream fis = new FileInputStream(this.file);
-		BufferedReader br = new BufferedReader(new FileReader(this.file));
+		
         if (this.file.length() > 0) {
 			ObjectInputStream ois = new ObjectInputStream(fis);
-		
 			try {
-				Prefs prefs = (Prefs)ois.readObject();
-				ois.close();
-				return prefs.getSavedPath();
+				//if(ois.available() > 0) {
+					Prefs prefs = (Prefs)ois.readObject();
+					ois.close();
+					return prefs.getSavedPath();
+				//}else {
+				//	ois.close();
+				//	return null;
+				//}
+				
 				
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
+				ois.close();
+				return null;
 			}
 		
-			ois.close();
 		}
-		
+        fis.close();
 		return null;
 		
 	}

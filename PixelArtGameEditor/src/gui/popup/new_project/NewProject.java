@@ -1,5 +1,10 @@
 package gui.popup.new_project;
 
+import java.io.File;
+import java.io.IOException;
+
+import controller.ProjectController;
+//import controller.TilesSourceController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -10,7 +15,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import model.properties.ProjectProperties;
+import model.tiles.TilesSourceDatabase;
 
 public class NewProject extends BorderPane{
 	
@@ -80,6 +88,20 @@ public class NewProject extends BorderPane{
 					ProjectProperties pp = ProjectProperties.getInstance();
 					pp.setProjectName(projectNameTextField.getText());
 					pp.setTileSize(tilesSizeSelector.getValue());
+					//properties has set on Propeject properties
+					DirectoryChooser directoryChooser = new DirectoryChooser();
+					directoryChooser.setTitle("Choose emplacement project");
+					
+					File file = directoryChooser.showDialog(null);
+					String path = file.getAbsolutePath() + "\\" + projectNameTextField.getText() + ".mpag";
+					File newProject = new File(path);
+					try {
+						//TilesSourceController.getInstance().saveToFile(newProject);
+						ProjectController.getInstance().saveToFile(newProject);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					NewProject.this.setVisible(false);
 				}
 				

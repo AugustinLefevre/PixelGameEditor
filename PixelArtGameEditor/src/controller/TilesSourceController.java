@@ -10,7 +10,7 @@ import model.tiles.TilesSource;
 import model.tiles.TilesSourceDatabase;
 
 public class TilesSourceController {
-	private TilesSourceDatabase db = new TilesSourceDatabase();
+	private TilesSourceDatabase db = TilesSourceDatabase.getInstance();
 	private static TilesSourceController instance;
 	
 	public List<TilesSource> getTilesSources(){
@@ -24,9 +24,7 @@ public class TilesSourceController {
 	public TilesSource addTilesSource(String path) {
 		
 		TilesSource ts = new TilesSource();
-		//ts.setHeight(height);
 		ts.setPath(path);
-		//ts.setWidth(width);
 
 		db.addTilesSource(ts);
 		return ts;
