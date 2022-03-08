@@ -18,7 +18,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import model.properties.ProjectProperties;
-import model.tiles.TilesSourceDatabase;
 
 public class NewProject extends BorderPane{
 	
