@@ -37,18 +37,18 @@ public class PrefsController {
 	public void openAutoProject() throws IOException {
 		// prefs File is not empty or and process is not on error
 		String projectPath = this.prefs.loadPathFromPrefs();
-		this.prefsFile = new File(this.prefs.loadPathFromPrefs());
-		if(this.prefsFile != null) {
-			newProjectPopup.setVisibility(false);
-			
-			TilesSourceController.getInstance().loadFromFile(this.prefsFile);
-			//
-			TilesManager.getInstance().leftColumnRefresh();
+		if(projectPath != null) {
+			this.prefsFile = new File(projectPath);
+			if(this.prefsFile != null) {
+				newProjectPopup.setVisibility(false);
+				TilesSourceController.getInstance().loadFromFile(this.prefsFile);
+				TilesManager.getInstance().leftColumnRefresh();
+			}
 		}else {
-			
 			newProjectPopup.setVisible(true);
-			
+		
 		}
+		
 		
 	}
 

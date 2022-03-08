@@ -17,7 +17,6 @@ import javafx.stage.FileChooser;
 import model.tiles.TilesSource;
 
 public class TilesManager{
-	//private BorderPane borderPane;
 	private TilesSourceController tilesSourceController;
 	private VBox leftDisplayer;
 	private VBox tilesSourcesDisplayer;
@@ -79,9 +78,8 @@ public class TilesManager{
 		this.leftDisplayer.getChildren().add(buttonImport);
 		this.leftDisplayer.getChildren().add(scrollPane);
 		bpane.setLeft(leftDisplayer);
-		bpane.setVisible(true);
+		bpane.setVisible(false);
 		leftColumnRefresh();
-		//this.borderPane = bpane;
 	}
 	/**
 	 * refresh the tiles container menu on the left of the tiles manager
@@ -134,7 +132,6 @@ public class TilesManager{
 				instance = new TilesManager();
 				return instance;
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
