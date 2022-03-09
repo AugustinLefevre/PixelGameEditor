@@ -14,7 +14,9 @@ public class Prefs implements Serializable {
 	public void setSavedPath(String savedPath) {
 		this.savedPath = savedPath;
 	}
-	
+	public void setPrefs(Prefs prefs) {
+		instance = prefs;
+	}
 	public static Prefs getInstance() {
 		if(instance == null) {
 			instance = new Prefs();

@@ -14,6 +14,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 //import javafx.scene.control.SeparatorMenuItem;
 import javafx.stage.FileChooser;
+import model.properties.Prefs;
 
 public class MenuPanel{
 
@@ -70,7 +71,13 @@ public class MenuPanel{
 		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Tiles source file", "*.mpag"));
 		this.saveFile.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent arg0) {
-				File file = fileChooser.showSaveDialog(null);
+				
+				File file = null;
+				if(Prefs.getInstance().getSavedPath() != null) {
+					file = new File(Prefs.getInstance().getSavedPath());
+				}else {
+					file = fileChooser.showSaveDialog(null);
+				}
 				if(file != null) {
 					try {
 						MenuPanel.this.tilesManager.getProjectController().saveToFile(file.getAbsoluteFile());
@@ -82,6 +89,11 @@ public class MenuPanel{
 		});
 		this.saveAs.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent arg0) {
+				if(Prefs.getInstance().getSavedPath() != null) {
+					File parent = new File(Prefs.getInstance().getSavedPath());
+					fileChooser.setInitialDirectory(new File(parent.getParent()));
+				}
+				
 				File file = fileChooser.showSaveDialog(null);
 				if(file != null) {
 					try {

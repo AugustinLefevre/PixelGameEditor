@@ -53,6 +53,7 @@ public class PreferenciesDB {
 			try {
 				//if(ois.available() > 0) {
 					Prefs prefs = (Prefs)ois.readObject();
+					Prefs.getInstance().setPrefs(prefs);
 					ois.close();
 					return prefs.getSavedPath();
 				//}else {
