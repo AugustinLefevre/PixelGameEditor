@@ -4,6 +4,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import com.sun.jdi.event.Event;
+
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
@@ -39,6 +41,22 @@ final class TilesSourceView extends Canvas{
 				
 			}
 			
+		});
+		addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent e) {
+				mouseIsIn = true;
+				
+			}
+		});
+		addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent e) {
+				mouseIsIn = false;
+				
+			}
 		});
 		addEventHandler(ScrollEvent.SCROLL, new EventHandler<ScrollEvent>() {
 			public void handle(ScrollEvent e) {
