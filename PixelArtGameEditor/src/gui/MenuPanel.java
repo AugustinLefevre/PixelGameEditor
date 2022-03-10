@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import controller.PrefsController;
+import controller.ProjectController;
 import gui.TilesEditor.TilesManager;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -68,13 +70,13 @@ public class MenuPanel{
 	private void setAction() {
 		FileChooser fileChooser = new FileChooser();
 		// mpag My Pixel Art Game
-		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Tiles source file", "*.mpag"));
+		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Pixel Art Game Editor", "*.mpag"));
 		this.saveFile.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent arg0) {
 				
 				File file = null;
-				if(Prefs.getInstance().getSavedPath() != null) {
-					file = new File(Prefs.getInstance().getSavedPath());
+				if(Prefs.getInstance().getProjectPath() != null) {
+					file = new File(Prefs.getInstance().getProjectPath());
 				}else {
 					file = fileChooser.showSaveDialog(null);
 				}
@@ -89,8 +91,8 @@ public class MenuPanel{
 		});
 		this.saveAs.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent arg0) {
-				if(Prefs.getInstance().getSavedPath() != null) {
-					File parent = new File(Prefs.getInstance().getSavedPath());
+				if(Prefs.getInstance().getProjectPath() != null) {
+					File parent = new File(Prefs.getInstance().getProjectPath());
 					fileChooser.setInitialDirectory(new File(parent.getParent()));
 				}
 				
@@ -106,11 +108,14 @@ public class MenuPanel{
 		});
 		this.openFile.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent arg0) {
+				
+				fileChooser.setInitialDirectory(new File(Prefs.getInstance().getProjectPath()).getParentFile());
 				File file = fileChooser.showOpenDialog(null);
 				if(file != null) {
 					try {
-						MenuPanel.this.tilesManager.getProjectController().loadFromFile(file);
-						MenuPanel.this.tilesManager.leftColumnRefresh();
+						ProjectController.getInstance().loadFromFile(file);
+						PrefsController.getInstance().saveProjectPath(file.getAbsolutePath());
+						TilesManager.getInstance().leftColumnRefresh();
 					} catch (IOException e1) {
 						System.out.println(e1.getMessage());
 					}

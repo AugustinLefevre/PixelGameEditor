@@ -2,8 +2,10 @@ package gui.TilesEditor;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
+import controller.PrefsController;
 import controller.ProjectController;
 //import controller.TilesSourceController;
 import javafx.event.ActionEvent;
@@ -66,15 +68,25 @@ public class TilesManager{
 		this.buttonImport = new Button("import source");
 		buttonImport.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent arg0) {
+				try {
+						if(PrefsController.getInstance().getSavedTilesSourcePath() != null) {
+							fileChooser.setInitialDirectory(new File(PrefsController.getInstance().getSavedTilesSourcePath()).getParentFile());
+						}
+					} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				File file = fileChooser.showOpenDialog(null);
 				try {
 					if(file != null) {
-						//TilesSource ts = tilesSourceController.addTilesSource(file.getAbsolutePath());
 						TilesSource ts = projectController.addTilesSource(file.getAbsolutePath());
+						PrefsController.getInstance().saveTilesSourcePath(file.getAbsolutePath());
 						setView(ts);
 						leftColumnRefresh();
 					}
 				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}

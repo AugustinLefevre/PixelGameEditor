@@ -3,7 +3,10 @@ package gui.popup.new_project;
 import java.io.File;
 import java.io.IOException;
 
+import controller.PrefsController;
 import controller.ProjectController;
+import gui.MenuPanel;
+import gui.TilesEditor.TilesManager;
 //import controller.TilesSourceController;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -17,6 +20,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import model.properties.Prefs;
 import model.properties.ProjectProperties;
 
 public class NewProject extends BorderPane{
@@ -95,7 +99,6 @@ public class NewProject extends BorderPane{
 					String path = file.getAbsolutePath() + "\\" + projectNameTextField.getText() + ".mpag";
 					File newProject = new File(path);
 					try {
-						//TilesSourceController.getInstance().saveToFile(newProject);
 						ProjectController.getInstance().saveToFile(newProject);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
@@ -111,6 +114,19 @@ public class NewProject extends BorderPane{
 
 			@Override
 			public void handle(ActionEvent arg0) {
+				FileChooser chooser = new FileChooser();
+				chooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("Pixel Art Game Editor", "*.mpag"));
+				File file = chooser.showOpenDialog(null);
+				if(file != null) {
+					try {
+						ProjectController.getInstance().loadFromFile(file);
+						PrefsController.getInstance().saveProjectPath(file.getAbsolutePath());
+						TilesManager.getInstance().leftColumnRefresh();
+					} catch (IOException e1) {
+						System.out.println(e1.getMessage());
+					}
+				}
+
 				NewProject.this.setVisibility(false);
 			}
 		});

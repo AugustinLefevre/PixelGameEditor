@@ -22,7 +22,7 @@ public class App extends Application{
 	    stage.setMaximized(true);
 	    mainFrame.setStage(stage);
 	    stage.show();	
-		PrefsController.getInstance(mainFrame.getRoot()).openAutoProject();
+		PrefsController.getInstance().openAutoProject();
 		TilesManager.getInstance().leftColumnRefresh();
 
 	}

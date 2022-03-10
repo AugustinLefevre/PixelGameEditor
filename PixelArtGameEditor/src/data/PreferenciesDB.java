@@ -1,4 +1,4 @@
-package model.properties;
+package data;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -12,12 +12,13 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 
+import model.properties.Prefs;
 import model.tiles.TilesSource;
 
 
 public class PreferenciesDB {
 	private static PreferenciesDB instance;
-	private Prefs prefs;
+	//private Prefs prefs;
 	private File file;
 	private String resourcePath;
 	//private OutputStream stream;
@@ -25,14 +26,12 @@ public class PreferenciesDB {
 	private PreferenciesDB() throws FileNotFoundException {
 		this.resourcePath = System.getProperty("user.dir") + "\\resources";
 		this.file = new File(this.resourcePath + "\\preferencies.prefs");
-		this.prefs = Prefs.getInstance();
 	}
 	
-	public void savePathInPrefs(String path) throws IOException {
+	public void savePrefs(Prefs prefs) throws IOException {
 		FileOutputStream fos = new FileOutputStream(this.file);
 		ObjectOutputStream oos = new ObjectOutputStream(fos);
-		this.prefs.setSavedPath(path);
-		oos.writeObject(this.prefs);
+		oos.writeObject(prefs);
 		oos.close();
 	}
 	public static PreferenciesDB getInstance() throws FileNotFoundException {
@@ -45,22 +44,15 @@ public class PreferenciesDB {
 
 
 	
-	public String loadPathFromPrefs() throws IOException {
+	public Prefs loadPrefs() throws IOException {
 		FileInputStream fis = new FileInputStream(this.file);
 		
         if (this.file.length() > 0) {
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			try {
-				//if(ois.available() > 0) {
-					Prefs prefs = (Prefs)ois.readObject();
-					Prefs.getInstance().setPrefs(prefs);
-					ois.close();
-					return prefs.getSavedPath();
-				//}else {
-				//	ois.close();
-				//	return null;
-				//}
-				
+				Prefs prefs = (Prefs)ois.readObject();
+				ois.close();
+				return prefs;
 				
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();

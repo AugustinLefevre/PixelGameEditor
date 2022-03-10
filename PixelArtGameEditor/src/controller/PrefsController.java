@@ -6,26 +6,23 @@ import java.io.IOException;
 import gui.TilesEditor.TilesManager;
 import gui.popup.new_project.NewProject;
 import javafx.scene.Group;
-import model.project.Project;
-import model.properties.PreferenciesDB;
+import model.properties.Prefs;
+import data.PreferenciesDB;
 
 public class PrefsController {
 	private PreferenciesDB prefs;
 	private static PrefsController instance;
 	private File prefsFile;
-	private NewProject newProjectPopup;
 	
-	public PrefsController(Group root) throws IOException {
-		this.newProjectPopup = NewProject.getInstance();
-		root.getChildren().add(this.newProjectPopup);
+	public PrefsController() throws IOException {
 		this.prefs = PreferenciesDB.getInstance();
-		if(this.prefs.loadPathFromPrefs() != null) {
-			this.prefsFile = new File(this.prefs.loadPathFromPrefs());
+		if(PreferenciesDB.getInstance().loadPrefs() != null) {
+			this.prefsFile = new File(PreferenciesDB.getInstance().loadPrefs().getProjectPath());
 		}
 	}
-	public static PrefsController getInstance(Group root) throws IOException {
+	public static PrefsController getInstance() throws IOException {
 		if(instance == null) {
-			instance = new PrefsController(root);
+			instance = new PrefsController();
 			return instance;
 		}else {
 			return instance;
@@ -36,24 +33,34 @@ public class PrefsController {
 	 * @throws IOException
 	 */
 	public void openAutoProject() throws IOException {
-		// prefs File is not empty or and process is not on error
-		String projectPath = this.prefs.loadPathFromPrefs();
-		if(projectPath != null) {
+		if(PreferenciesDB.getInstance().loadPrefs() != null) {
+			String projectPath = PreferenciesDB.getInstance().loadPrefs().getProjectPath();
 			this.prefsFile = new File(projectPath);
 			if(this.prefsFile != null) {
-				newProjectPopup.setVisibility(false);
+				NewProject.getInstance().setVisibility(false);
 				ProjectController.getInstance().loadFromFile(this.prefsFile);
+				saveProjectPath(projectPath);
+				if(PreferenciesDB.getInstance().loadPrefs().getTilesSourcePath() != null) {
+					saveTilesSourcePath(PreferenciesDB.getInstance().loadPrefs().getTilesSourcePath());
+				}
 				TilesManager.getInstance().leftColumnRefresh();
 			}
 		}else {
-			newProjectPopup.setVisible(true);
+			NewProject.getInstance().setVisible(true);
 		
 		}
 		
 		
 	}
-
-	public void savePath(String path) throws IOException {
-		this.prefs.savePathInPrefs(path);
+	public String getSavedTilesSourcePath() {
+		return Prefs.getInstance().getTilesSourcePath();
+	}
+	public void saveProjectPath(String path) throws IOException {
+		Prefs.getInstance().setProjectPath(path);
+		PreferenciesDB.getInstance().savePrefs(Prefs.getInstance());
+	}
+	public void saveTilesSourcePath(String path) throws IOException {
+		Prefs.getInstance().setTilesSourcePath(path);
+		PreferenciesDB.getInstance().savePrefs(Prefs.getInstance());
 	}
 }
