@@ -7,6 +7,7 @@ import java.io.IOException;
 import controller.PrefsController;
 import controller.ProjectController;
 import gui.TilesEditor.TilesManager;
+import gui.popup.new_project.NewProject;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -71,6 +72,13 @@ public class MenuPanel{
 		FileChooser fileChooser = new FileChooser();
 		// mpag My Pixel Art Game
 		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Pixel Art Game Editor", "*.mpag"));
+		this.newFile.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent arg0) {
+				NewProject.getInstance().setVisibility(true);
+			}
+		});
 		this.saveFile.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent arg0) {
 				

@@ -12,27 +12,32 @@ import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.robot.Robot;
+import model.properties.ProjectProperties;
 
 public class TilesSourceViewCursor extends ImageView {
 	private static TilesSourceViewCursor instance;
+	private boolean clipped;
 	private TilesSourceViewCursor() {
 		try {
-			Robot robot =  new Robot();
+			//Robot robot =  new Robot();
+			setMouseTransparent(true);
+			clipped = true;
 			String path = System.getProperty("user.dir") + "\\resources";
 			InputStream stream = new FileInputStream(path + "\\tilesSelectorCursor256.png");
 			Image image = new Image(stream);
 			setImage(image);
+
 			setFitWidth(50);
 			
 			setPreserveRatio(true);
-			ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
+			ScheduledExecutorService ses = Executors.newScheduledThreadPool(1000);
 			
 			Runnable sheduledTask = () -> {
 				Platform.runLater(()->{
 					try {
-						setPosition(robot.getMousePosition());
+						modifyPosition();
 					}catch(Exception e){
-						System.out.println("error in scheduler" + e);
+						System.out.println("error in scheduler :" + e);
 					}
 				});
 			};
@@ -44,19 +49,43 @@ public class TilesSourceViewCursor extends ImageView {
 		}
 		
 	}
-	public void setPosition(Point2D position) {
+	public void modifyPosition() {
 		try {
-			double windowPosX = (getScene()==null)?0 : getScene().getWindow().getX();
-			double windowPosY = (getScene()==null)?0 : getScene().getWindow().getY();
-			double scenePosX = (getScene()==null)?0 : getScene().getX();
-			double scenePosY = (getScene()==null)?0 : getScene().getY();
-			double posX = position.getX() - windowPosX - localToScene(0, 0).getX() - scenePosX;
-			double posY = position.getY() - windowPosY - localToScene(0, 0).getY() - scenePosY;
-			setX(posX);
-			setY(posY);
-		}catch(Exception e) {
-			System.out.println("error on set cursor position" + e);
+			if(!clipped) {
+				try {
+					setX(TilesSourceView.getInstance().getMousePositionX());
+					setY(TilesSourceView.getInstance().getMousePositionY());
+				}catch(Exception e) {
+					System.out.println("error on set cursor position" + e);
+				}
+			}
+			else {
+				double sizer = TilesSourceView.getInstance().getSizer();
+	
+				double clippedPosX = Math.floor(TilesSourceView.getInstance().getMousePositionX() * sizer);
+				double clippedPosY = Math.floor(TilesSourceView.getInstance().getMousePositionY() * sizer);
+	
+				double res = TilesSourceView.getInstance().getResolution();
+	
+				try {
+					setX(clippedPosX * (res) );
+					setY(clippedPosY * (res) );
+				}catch(Exception e) {
+					System.out.println("error on set cursor position" + e);
+				}
+			}
+			
+			
+		}catch(Exception e){
+			System.out.println("error in scheduler :" + e);
 		}
+		
+	}
+	public void setSize() {
+		double tempCursorSize = (TilesSourceView.getInstance().getWidth() /
+				TilesSourceView.getInstance().getCurrentPXSize() * 
+				ProjectProperties.getInstance().getTileSize());
+		setFitWidth(tempCursorSize);
 	}
 	public void switchVisibility(boolean visibility) {
 		try{
@@ -71,5 +100,11 @@ public class TilesSourceViewCursor extends ImageView {
 			return instance;
 		}
 		return instance;
+	}
+	public double getCursorSize() {
+		return getFitWidth();
+	}
+	public void setCursorSize(double size) {
+		setFitWidth(size);
 	}
 }

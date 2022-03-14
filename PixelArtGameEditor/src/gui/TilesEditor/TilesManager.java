@@ -47,9 +47,15 @@ public class TilesManager{
 		tilesSourceCanvas.setStyle("-fx-background-color: #8f8f8f");
 		
 		BorderPane tilesSourceDisplayer = new BorderPane();
-		tilesSourceDisplayer.getChildren().addAll(tilesSourceCanvas, TilesSourceViewCursor.getInstance());
+		//Scroll scrollCanva = new ScrollPane();
+		//scrollCanva.setContent(tilesSourceDisplayer);
+		BorderPane mainDisplayer = new BorderPane();
+		//tilesSourceDisplayer.getChildren().addAll(tilesSourceCanvas, TilesSourceViewCursor.getInstance());
+		mainDisplayer.getChildren().addAll(tilesSourceCanvas, TilesSourceViewCursor.getInstance());
 		ScrollPane mainScrollPane = new ScrollPane();
-		mainScrollPane.setContent(tilesSourceDisplayer);
+		mainScrollPane.setContent(mainDisplayer);
+		
+		//mainScrollPane.setPrefSize(100,100);
 		bpane.setCenter(mainScrollPane);
 		
 		this.leftDisplayer = new VBox();

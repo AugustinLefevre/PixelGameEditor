@@ -41,7 +41,7 @@ public class NewProject extends BorderPane{
 		projectNameTextField = new TextField();
 		tilesSizeSelectorLabel = new Label("Tiles size :");
 		tilesSizeSelector = new ComboBox<Integer>();
-		tilesSizeSelector.getItems().addAll(16, 32, 64, 128);
+		tilesSizeSelector.getItems().addAll(2,16, 32, 64, 128);
 		createButton = new Button("Create");
 		openProjectButton = new Button("Open Project");
 		
