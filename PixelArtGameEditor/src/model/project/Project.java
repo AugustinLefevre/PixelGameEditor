@@ -5,11 +5,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 import model.properties.ProjectProperties;
+import model.tiles.Tile;
 import model.tiles.TilesSource;
 
 public class Project implements Serializable{
 	private static final long serialVersionUID = 4078651635515023249L;
 	private List<TilesSource> tilesSource;
+	private List<Tile> tiles;
 	private ProjectProperties projectProperties;
 	//private TilesSourceDatabase tilesSourceDataBase;
 	private static Project instance;
@@ -17,6 +19,7 @@ public class Project implements Serializable{
 	private Project() {
 		//this.tilesSourceDataBase = TilesSourceDatabase.getInstance();
 		this.tilesSource = new LinkedList<TilesSource>();
+		this.tiles = new LinkedList<Tile>();
 	}
 	public void setProject(Project project) {
 		instance = project;
@@ -43,4 +46,14 @@ public class Project implements Serializable{
 	public void setTilesSource(List<TilesSource> ts) {
 		this.tilesSource = ts;
 	}
+	public void addTile(Tile tile) {
+		this.tiles.add(tile);
+	}
+	public List<Tile> getTiles(){
+		return this.tiles;
+	}
+	public void setTiles(List<Tile> tiles) {
+		this.tiles = tiles;
+	}
 }
+ 

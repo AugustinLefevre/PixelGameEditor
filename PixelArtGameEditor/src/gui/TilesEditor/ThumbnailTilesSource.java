@@ -22,7 +22,6 @@ public class ThumbnailTilesSource extends ImageView {
 				try {
 					TilesManager.setView(ts);
 				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}

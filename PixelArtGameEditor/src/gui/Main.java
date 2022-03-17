@@ -14,7 +14,7 @@ public class Main {
 	private Scene scene;
 	private Stage stage;
 	private static Main instance;
-	public Main() throws IOException {
+	private Main() throws IOException {
 		root = new Group();
 	    scene = new Scene(root, Color.WHITESMOKE);
 	    root.getChildren().add(MenuPanel.getInstance(root).getMenuBar());

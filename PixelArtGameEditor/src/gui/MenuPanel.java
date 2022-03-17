@@ -92,7 +92,7 @@ public class MenuPanel{
 					try {
 						MenuPanel.this.tilesManager.getProjectController().saveToFile(file.getAbsoluteFile());
 					} catch (IOException e1) {
-						System.out.println(e1.getMessage());
+						System.err.println(e1.getMessage());
 					}
 				}
 			}
@@ -109,7 +109,7 @@ public class MenuPanel{
 					try {
 						MenuPanel.this.tilesManager.getProjectController().saveToFile(file.getAbsoluteFile());
 					} catch (IOException e1) {
-						System.out.println(e1.getMessage());
+						System.err.println(e1.getMessage());
 					}
 				}
 			}
@@ -123,9 +123,10 @@ public class MenuPanel{
 					try {
 						ProjectController.getInstance().loadFromFile(file);
 						PrefsController.getInstance().saveProjectPath(file.getAbsolutePath());
-						TilesManager.getInstance().leftColumnRefresh();
+						TilesManager.getInstance().tilesSourceThumbnailColumnRefresh();
+						TilesManager.getInstance().tilesColumnRefresh();
 					} catch (IOException e1) {
-						System.out.println(e1.getMessage());
+						System.err.println(e1.getMessage());
 					}
 				}
 			}
@@ -141,7 +142,7 @@ public class MenuPanel{
 	public MenuBar getMenuBar() {
 		return menuBar;
 	}
-	
+
 	public static MenuPanel getInstance(Group root) {
 		if(instance == null) {
 			try {

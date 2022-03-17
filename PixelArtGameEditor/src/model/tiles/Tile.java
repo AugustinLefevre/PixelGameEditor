@@ -1,43 +1,56 @@
 package model.tiles;
 
-import com.sun.javafx.geom.Point2D;
+import java.io.Serializable;
 
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import model.properties.ProjectProperties;
 
-public class Tile {
-	private static int id = 0;
-	Point2D position;
-	int width;
-	int height;
-	Image source;
+public class Tile implements Serializable {
+	private static final long serialVersionUID = 1190551685062006786L;
+	private static int count = 0;
+	private int id;
+	private int width;
+	private int height;
+	private TilesSourceImage tilesSourceImage;
+	private String path;
+	private float positionX;
+	private float positionY;
 	public Tile() {
-		id++;
+		this.id = count++;
+		this.width = ProjectProperties.getInstance().getTileSize();
+		this.height = ProjectProperties.getInstance().getTileSize();
 	}
-	public Point2D getPosition() {
-		return position;
-	}
-	public void setPosition(Point2D position) {
-		this.position = position;
+	public Tile(String path, float positionX, float positionY) {
+		//this.canvas = new Canvas(50, 50);
+		this.id = count++;
+		this.width = ProjectProperties.getInstance().getTileSize();
+		this.height = ProjectProperties.getInstance().getTileSize();
+		this.path = path;
+		this.positionX = positionX;
+		this.positionY = positionY;
 	}
 	public int getWidth() {
 		return width;
 	}
-	public void setWidth(int width) {
-		this.width = width;
-	}
 	public int getHeight() {
 		return height;
 	}
-	public void setHeight(int height) {
-		this.height = height;
+	public float getPositionX() {
+		return positionX;
 	}
-	public Image getSource() {
-		return source;
+	public float getPositionY() {
+		return positionY;
 	}
-	public void setSource(Image source) {
-		this.source = source;
+	public TilesSourceImage getTilesSourceImage() {
+		if(tilesSourceImage == null) {
+			tilesSourceImage = new TilesSourceImage(this.path);
+			return tilesSourceImage;
+		}
+		return tilesSourceImage;
 	}
-	public static int getId() {
-		return id;
+	public int getId() {
+		return this.id;
 	}
 }

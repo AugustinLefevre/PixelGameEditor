@@ -1,11 +1,8 @@
 package gui;
 
-import java.io.IOException;
-
 import controller.PrefsController;
 import gui.TilesEditor.TilesManager;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.stage.Stage;
 
 public class App extends Application{
@@ -21,10 +18,10 @@ public class App extends Application{
 	    stage.setScene(mainFrame.getScene());
 	    stage.setMaximized(true);
 	    mainFrame.setStage(stage);
-	    stage.show();	
+	    stage.show();
 		PrefsController.getInstance().openAutoProject();
-		TilesManager.getInstance().leftColumnRefresh();
-
+		TilesManager.getInstance().tilesSourceThumbnailColumnRefresh();
+		TilesManager.getInstance().tilesColumnRefresh();
 	}
 
 }

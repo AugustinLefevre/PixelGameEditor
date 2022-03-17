@@ -8,15 +8,17 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javafx.application.Platform;
-import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.robot.Robot;
 import model.properties.ProjectProperties;
 
 public class TilesSourceViewCursor extends ImageView {
 	private static TilesSourceViewCursor instance;
 	private boolean clipped;
+	private float deltaX = 0;
+	private float deltaY = 0;
+	private int actualPositionX = 0;
+	private int actualPositionY = 0;
 	private TilesSourceViewCursor() {
 		try {
 			//Robot robot =  new Robot();
@@ -30,14 +32,14 @@ public class TilesSourceViewCursor extends ImageView {
 			setFitWidth(50);
 			
 			setPreserveRatio(true);
-			ScheduledExecutorService ses = Executors.newScheduledThreadPool(1000);
+			ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
 			
 			Runnable sheduledTask = () -> {
 				Platform.runLater(()->{
 					try {
 						modifyPosition();
 					}catch(Exception e){
-						System.out.println("error in scheduler :" + e);
+						System.err.println("error in scheduler :" + e);
 					}
 				});
 			};
@@ -56,7 +58,7 @@ public class TilesSourceViewCursor extends ImageView {
 					setX(TilesSourceView.getInstance().getMousePositionX());
 					setY(TilesSourceView.getInstance().getMousePositionY());
 				}catch(Exception e) {
-					System.out.println("error on set cursor position" + e);
+					System.err.println("error on set cursor position" + e);
 				}
 			}
 			else {
@@ -68,16 +70,17 @@ public class TilesSourceViewCursor extends ImageView {
 				double res = TilesSourceView.getInstance().getResolution();
 	
 				try {
-					setX(clippedPosX * (res) );
-					setY(clippedPosY * (res) );
+					setX(clippedPosX * (res) + deltaX);
+					setY(clippedPosY * (res) + deltaY);
+					this.actualPositionX = (int) (clippedPosX * (res));
+					this.actualPositionY = (int) (clippedPosY * (res));
 				}catch(Exception e) {
-					System.out.println("error on set cursor position" + e);
+					System.err.println("error on set cursor position" + e);
 				}
 			}
 			
-			
 		}catch(Exception e){
-			System.out.println("error in scheduler :" + e);
+			System.err.println("error in scheduler :" + e);
 		}
 		
 	}
@@ -91,7 +94,7 @@ public class TilesSourceViewCursor extends ImageView {
 		try{
 			setVisible(visibility);
 		}catch(Exception e) {
-			System.out.println(e);
+			System.err.println(e);
 		}
 	}
 	public static TilesSourceViewCursor getInstance() {
@@ -106,5 +109,21 @@ public class TilesSourceViewCursor extends ImageView {
 	}
 	public void setCursorSize(double size) {
 		setFitWidth(size);
+	}
+	public void setDelta(float X, float Y) {
+		this.deltaX = (float) (X % TilesSourceView.getInstance().getResolution());
+		this.deltaY = (float) (Y % TilesSourceView.getInstance().getResolution());
+	}
+	public float getDeltaX() {
+		return deltaX;
+	}
+	public float getDeltaY() {
+		return deltaY;
+	}
+	public int getActualPositionX() {
+		return actualPositionX;
+	}
+	public int getActualPositionY() {
+		return actualPositionY;
 	}
 }

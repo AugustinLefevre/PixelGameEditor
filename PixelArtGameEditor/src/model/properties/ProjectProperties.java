@@ -2,8 +2,6 @@ package model.properties;
 
 import java.io.Serializable;
 
-import model.project.Project;
-
 public class ProjectProperties implements Serializable {
 	private static final long serialVersionUID = 3846525459406027524L;
 	private static ProjectProperties instance;

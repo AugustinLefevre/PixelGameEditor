@@ -5,17 +5,14 @@ import java.io.IOException;
 
 import gui.TilesEditor.TilesManager;
 import gui.popup.new_project.NewProject;
-import javafx.scene.Group;
 import model.properties.Prefs;
 import data.PreferenciesDB;
 
 public class PrefsController {
-	private PreferenciesDB prefs;
 	private static PrefsController instance;
 	private File prefsFile;
 	
 	public PrefsController() throws IOException {
-		this.prefs = PreferenciesDB.getInstance();
 		if(PreferenciesDB.getInstance().loadPrefs() != null) {
 			this.prefsFile = new File(PreferenciesDB.getInstance().loadPrefs().getProjectPath());
 		}
@@ -43,7 +40,8 @@ public class PrefsController {
 				if(PreferenciesDB.getInstance().loadPrefs().getTilesSourcePath() != null) {
 					saveTilesSourcePath(PreferenciesDB.getInstance().loadPrefs().getTilesSourcePath());
 				}
-				TilesManager.getInstance().leftColumnRefresh();
+				TilesManager.getInstance().tilesSourceThumbnailColumnRefresh();
+				TilesManager.getInstance().tilesColumnRefresh();
 			}
 		}else {
 			NewProject.getInstance().setVisible(true);

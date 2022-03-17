@@ -1,34 +1,32 @@
 package gui.TilesEditor;
 
-import java.text.DecimalFormat;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
-import com.sun.jdi.event.Event;
 
+import java.io.FileNotFoundException;
+
+import controller.PrefsController;
+import controller.ProjectController;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
-import javafx.geometry.Point2D;
+import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.robot.Robot;
-import model.properties.ProjectProperties;
+import javafx.scene.paint.Color;
+import model.tiles.Tile;
+import model.tiles.TilesSource;
 /**
  * @author augustin.lefevre
  * Singleton of the Tiles source viewer displayed in the tiles manager
  */
 class TilesSourceView extends Canvas{
-	//private Robot robot;
-	//private TilesSourceViewCursor tilesSourceViewCursor;
-	private static boolean  mouseIsIn = false; //check if the mouse is in the tile manager
+	//private static boolean  mouseIsIn = false; //check if the mouse is in the tile manager
 	private static TilesSourceView instance;//tiles source viewer instance
 	private static GraphicsContext gc;
 	private Image image;
+	private String currentSource;
 	private int currentPXSize = 0;
 	private int currentTilesSourceSize;
 	private int mousePositionX;
@@ -42,6 +40,7 @@ class TilesSourceView extends Canvas{
 	private float currentPositionX = 0;
 	private float currentPositionY = 0;
 	private float positionY = 0;
+	private boolean dragged = false;
 	
 	public TilesSourceView() {
 		
@@ -53,14 +52,28 @@ class TilesSourceView extends Canvas{
 
 			@Override
 			public void handle(MouseEvent e) {
+				//System.out.println(resolution);
 				mousePositionX = (int) e.getX();
 				mousePositionY = (int) e.getY();	
+				
 			}
 		});
 		addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
-				//System.out.println("click _________________________________________" + e.getX());
+				System.out.println("position : " +TilesSourceView.this.mousePositionX/24 + "," + TilesSourceView.this.mousePositionY/24 );
+				int I = (int) ( TilesSourceViewCursor.getInstance().getActualPositionX()/currentPXSize);
+				int j = (int) ( TilesSourceViewCursor.getInstance().getActualPositionY()/currentPXSize);
+				System.out.println("realpos ="+ I + " / " + j);
+				Tile tile = ProjectController.getInstance().addTile(
+						TilesSourceView.this.currentSource,
+						(TilesSourceViewCursor.getInstance().getActualPositionX()/currentPXSize),
+						TilesSourceViewCursor.getInstance().getActualPositionY()/currentPXSize);
+				try {
+					TilesManager.getInstance().tilesColumnRefresh();
+				} catch (FileNotFoundException e2) {
+					e2.printStackTrace();
+				}
 			}
 			
 		});
@@ -69,6 +82,8 @@ class TilesSourceView extends Canvas{
 
 			@Override
 			public void handle(MouseEvent e) {
+				dragged = true;
+				TilesSourceView.drawBackground();
 				TilesSourceView.this.additivPositionX = (float) (e.getX() - TilesSourceView.this.positionX);
 				TilesSourceView.this.additivPositionY = (float) (e.getY() - TilesSourceView.this.positionY);
 				modifyPosition(TilesSourceView.this.additivPositionX + TilesSourceView.this.currentPositionX , TilesSourceView.this.additivPositionY + TilesSourceView.this.currentPositionY );
@@ -78,8 +93,13 @@ class TilesSourceView extends Canvas{
 		addEventHandler(MouseEvent.MOUSE_RELEASED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
-				TilesSourceView.this.currentPositionX += (float) TilesSourceView.this.additivPositionX;
-				TilesSourceView.this.currentPositionY += (float) TilesSourceView.this.additivPositionY;
+				if(dragged  == true) {
+					TilesSourceView.this.currentPositionX += (float) TilesSourceView.this.additivPositionX;
+					TilesSourceView.this.currentPositionY += (float) TilesSourceView.this.additivPositionY;
+					TilesSourceViewCursor.getInstance().setDelta(TilesSourceView.this.currentPositionX, TilesSourceView.this.currentPositionY);
+					dragged = false;
+				}
+				
 			}
 		});
 		addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
@@ -90,24 +110,24 @@ class TilesSourceView extends Canvas{
 			}
 		});
 		
-		addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent e) {
-				mouseIsIn = true;
-				
-			}
-		});
-		addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent e) {
-				mouseIsIn = false;
-			}
-		});
+//		addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+//			@Override
+//			public void handle(MouseEvent e) {
+//				getScene().setCursor(Cursor.NONE);
+//				
+//			}
+//		});
+//		addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler<MouseEvent>() {
+//			@Override
+//			public void handle(MouseEvent e) {
+//				getScene().setCursor(Cursor.DEFAULT);
+//			}
+//		});
 		addEventHandler(ScrollEvent.SCROLL, new EventHandler<ScrollEvent>() {
 			public void handle(ScrollEvent e) {
 				boolean canZoom = (getWidth() > 512 )? true: e.getDeltaY() > 0;
 				boolean canDezoom = (getWidth() < 1512 )? true: e.getDeltaY() < 0;
-				if(mouseIsIn && canZoom && canDezoom) {
+				if(canZoom && canDezoom) {
 					double zoomFactor = 1.05;
 					double deltaY = e.getDeltaY();
 					if(deltaY < 0)
@@ -128,13 +148,18 @@ class TilesSourceView extends Canvas{
 					
 					TilesSourceView.this.setWidth(newSizeX);
 					TilesSourceView.this.setHeight(newSizeY);
-					TilesSourceView.this.gc.drawImage(TilesSourceView.this.image, 0, 0, newSizeX, newSizeY);
+					drawBackground();
+					TilesSourceView.gc.drawImage(
+							TilesSourceView.this.image,
+							TilesSourceView.this.additivPositionX + TilesSourceView.this.currentPositionX,
+							TilesSourceView.this.additivPositionY + TilesSourceView.this.currentPositionY,
+							newSizeX,
+							newSizeY);
 					TilesSourceView.this.currentTilesSourceSize = (int) newSizeX;
 					TilesSourceViewCursor.getInstance().setSize();
 					
 					setCursorParams();
 				}
-
 			}
 		});
 	}
@@ -153,9 +178,16 @@ class TilesSourceView extends Canvas{
 		this.image = image;
 		this.currentPXSize = (int) image.getWidth();
 		currentTilesSourceSize =  (int) (getWidth() - getWidth()%image.getWidth());
-		gc.drawImage(image, 0, 0, currentTilesSourceSize, currentTilesSourceSize);
+		gc.drawImage(image,
+				0,
+				0,
+				currentTilesSourceSize,
+				currentTilesSourceSize);
 		TilesSourceViewCursor.getInstance().setSize();
 		setCursorParams();
+	}
+	public void setCurrentSource(String currentSource) {
+		this.currentSource = currentSource;
 	}
 	public void setCursorParams() {
 		Platform.runLater(new Runnable() {
@@ -183,7 +215,11 @@ class TilesSourceView extends Canvas{
 		return instance;
 	}
 	private void modifyPosition(double positionX, double positionY) {
-		gc.drawImage(image, positionX, positionY, currentTilesSourceSize, currentTilesSourceSize);
+		gc.drawImage(image,
+				positionX,
+				positionY,
+				currentTilesSourceSize,
+				currentTilesSourceSize);
 	}
 	public int getCurrentPXSize() {
 		return currentPXSize;
@@ -197,5 +233,14 @@ class TilesSourceView extends Canvas{
 	public int getMousePositionY() {
 		return mousePositionY;
 	}
-
+	public float getPositionX() {
+		return positionX;
+	}
+	public float getPositionY() {
+		return positionY;
+	}
+	public static void drawBackground() {
+		gc.setFill(Color.LIGHTGRAY);
+		gc.fillRect(0, 0, 1000, 1000);
+	}
 }
