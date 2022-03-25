@@ -1,24 +1,17 @@
 package data;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.util.Arrays;
-
 import model.properties.Prefs;
-import model.tiles.TilesSource;
 
 
 public class PreferenciesDB {
 	private static PreferenciesDB instance;
-	//private Prefs prefs;
 	private File file;
 	private String resourcePath;
 	//private OutputStream stream;

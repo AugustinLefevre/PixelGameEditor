@@ -7,7 +7,7 @@ import java.util.List;
 
 import controller.PrefsController;
 import controller.ProjectController;
-//import controller.TilesSourceController;
+import gui.Main;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -21,40 +21,40 @@ import javafx.stage.FileChooser;
 import model.tiles.Tile;
 import model.tiles.TilesSource;
 
-public class TilesManager{
-	private ProjectController projectController;
+public class TilesManager extends BorderPane{
 	private VBox leftDisplayer;
 	private VBox tilesSourcesDisplayer;
 	private GridPane tilesDisplayer;
 	private static Group tilesSourceCanvas;
 	private Button buttonImport;
-	private static BorderPane bpane;
 	private static TilesManager instance;
 	/**
 	 * here we display items and menu for the tiles manager
 	 * @throws FileNotFoundException
 	 */
-	private TilesManager() throws FileNotFoundException {
+	private TilesManager(){
+		super();
 		FileChooser fileChooser = new FileChooser();
-		//tilesSourceController = TilesSourceController.getInstance();
-		projectController = ProjectController.getInstance();
 		fileChooser.setTitle("Import tiles source");
 		
-		bpane = new BorderPane();
-		bpane.setPadding(new Insets(50, 20, 10, 10));
-		bpane.setPrefSize(800, 600);
-		bpane.setStyle("-fx-background-color: #2f4f4f");
+		setPadding(new Insets(10, 10, 60, 10));
+		int sizeX;
+		int sizeY;
+		
+		sizeX = (int)Main.getInstance().getScene().getWidth();
+		sizeY = (int)Main.getInstance().getScene().getHeight();
+		setPrefSize(sizeX, sizeY);
+		
+		
+		setStyle("-fx-background-color: #2f4f4f");
 	
 		tilesSourceCanvas = new Group();
 		tilesSourceCanvas.setStyle("-fx-background-color: #8f8f8f");
 		
 		BorderPane mainDisplayer = new BorderPane();
 		mainDisplayer.getChildren().addAll(tilesSourceCanvas, TilesSourceViewCursor.getInstance());
-		ScrollPane mainScrollPane = new ScrollPane();
-		mainScrollPane.setContent(mainDisplayer);
 		
-		bpane.setCenter(mainScrollPane);
-		
+		setCenter(mainDisplayer);
 		this.leftDisplayer = new VBox();
 		this.leftDisplayer.setSpacing(10);
 		this.leftDisplayer.setStyle("-fx-background-color: #2f2f4f");
@@ -66,12 +66,12 @@ public class TilesManager{
 		this.tilesSourcesDisplayer.setStyle("-fx-background-color: #8f8f8f");
 		
 		this.tilesDisplayer = new GridPane();
-		//this.tilesDisplayer.setSpacing(10);
 		this.tilesDisplayer.setPrefHeight(500);
 		this.tilesDisplayer.setMaxHeight(500);
 		this.tilesDisplayer.setStyle("-fx-background-color: #8f8f8f");
 		
 		ScrollPane tilesSourceScrollPane = new ScrollPane();
+		tilesSourceScrollPane.setPrefWidth(115);
 		tilesSourceScrollPane.setContent(this.tilesSourcesDisplayer);
 		
 		ScrollPane tilesScrollPane = new ScrollPane();
@@ -90,10 +90,11 @@ public class TilesManager{
 				File file = fileChooser.showOpenDialog(null);
 				try {
 					if(file != null) {
-						TilesSource ts = projectController.addTilesSource(file.getAbsolutePath());
+						TilesSource ts = ProjectController.getInstance().addTilesSource(file.getAbsolutePath());
 						PrefsController.getInstance().saveTilesSourcePath(file.getAbsolutePath());
 						setView(ts);
 						tilesSourceThumbnailColumnRefresh();
+						PrefsController.getInstance().setConfirm(true);
 					}
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
@@ -105,11 +106,15 @@ public class TilesManager{
 		this.leftDisplayer.getChildren().add(buttonImport);
 		this.leftDisplayer.getChildren().add(tilesSourceScrollPane);
 		this.leftDisplayer.getChildren().add(tilesScrollPane);
-		bpane.setLeft(leftDisplayer);
-		bpane.setVisible(false);
+		setLeft(leftDisplayer);
 		
-		tilesSourceThumbnailColumnRefresh();
-		tilesColumnRefresh();
+		try {
+			tilesSourceThumbnailColumnRefresh();
+			tilesColumnRefresh();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
 		
 	}
 	/**
@@ -118,20 +123,20 @@ public class TilesManager{
 	 */
 	public void tilesSourceThumbnailColumnRefresh() throws FileNotFoundException {
 		
-		if(this.projectController.getTilesSource() != null) {
+		if(ProjectController.getInstance().getTilesSource() != null) {
 			this.tilesSourcesDisplayer.getChildren().clear();
-			List<TilesSource> tilesSources = this.projectController.getTilesSource();
+			List<TilesSource> tilesSources = ProjectController.getInstance().getTilesSource();
 			for(TilesSource ts : tilesSources) {
-				this.tilesSourcesDisplayer.getChildren().add(new ThumbnailTilesSource(ts));
+				this.tilesSourcesDisplayer.getChildren().add(new ThumbnailTilesSourceDisplayer(ts));
 			}
 		}	
 		
 	}
 	public void tilesColumnRefresh() throws FileNotFoundException {
 		
-		if(this.projectController.getTiles() != null) {
+		if(ProjectController.getInstance().getTiles() != null) {
 			this.tilesDisplayer.getChildren().clear();
-			List<Tile> tiles = this.projectController.getTiles();
+			List<Tile> tiles = ProjectController.getInstance().getTiles();
 			int count = 1;
 			int count2 = 0;
 			for(Tile tile : tiles) {
@@ -145,27 +150,6 @@ public class TilesManager{
 			}
 		}	
 		
-	}
-	/**
-	 * get the borderPane of the Tiles Manager
-	 * @return 
-	 */
-	public BorderPane getBorderPane() {
-		return bpane;
-	}
-	/**
-	 * display the Tiles manager or not
-	 * @param bool Diplay if true
-	 */
-	public void setVisibility(boolean bool) {
-		TilesManager.bpane.setVisible(bool);
-	}
-	/**
-	 * get the controller
-	 * @return
-	 */
-	public ProjectController getProjectController() {
-		return this.projectController;
 	}
 	/**
 	 * modify the Tiles Source view
@@ -182,11 +166,8 @@ public class TilesManager{
 	
 	public static TilesManager getInstance() {
 		if(instance == null) {
-			try {
-				instance = new TilesManager();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
+			instance = new TilesManager();
+			
 		}
 		return instance;
 	}

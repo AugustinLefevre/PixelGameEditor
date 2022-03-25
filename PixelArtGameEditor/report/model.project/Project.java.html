@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Project.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Coverage Report</a> &gt; <a href="index.source.html" class="el_package">model.project</a> &gt; <span class="el_source">Project.java</span></div><h1>Project.java</h1><pre class="source lang-java linenums">package model.project;
+
+import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
+
+import model.properties.ProjectProperties;
+import model.tiles.TilesSource;
+
+public class Project implements Serializable{
+	private static final long serialVersionUID = 4078651635515023249L;
+	private List&lt;TilesSource&gt; tilesSource;
+	private ProjectProperties projectProperties;
+	//private TilesSourceDatabase tilesSourceDataBase;
+	private static Project instance;
+	
+<span class="nc" id="L17">	private Project() {</span>
+		//this.tilesSourceDataBase = TilesSourceDatabase.getInstance();
+<span class="nc" id="L19">		this.tilesSource = new LinkedList&lt;TilesSource&gt;();</span>
+<span class="nc" id="L20">	}</span>
+	public void setProject(Project project) {
+<span class="nc" id="L22">		instance = project;</span>
+<span class="nc" id="L23">	}</span>
+	public static Project getInstance() {
+<span class="nc bnc" id="L25" title="All 2 branches missed.">		if(instance == null) {</span>
+<span class="nc" id="L26">			instance = new Project();</span>
+		}
+<span class="nc" id="L28">		return instance;</span>
+		
+	}
+	public ProjectProperties getProjectProperties() {
+<span class="nc" id="L32">		return projectProperties;</span>
+	}
+	public void setProjectProperties() {
+<span class="nc" id="L35">		this.projectProperties = ProjectProperties.getInstance();</span>
+<span class="nc" id="L36">	}</span>
+	public void addTilesSource(TilesSource ts) {
+<span class="nc" id="L38">		this.tilesSource.add(ts);</span>
+<span class="nc" id="L39">	}</span>
+	public List&lt;TilesSource&gt; getTilesSource(){
+<span class="nc" id="L41">		return this.tilesSource;</span>
+	}
+	public void setTilesSource(List&lt;TilesSource&gt; ts) {
+<span class="nc" id="L44">		this.tilesSource = ts;</span>
+<span class="nc" id="L45">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

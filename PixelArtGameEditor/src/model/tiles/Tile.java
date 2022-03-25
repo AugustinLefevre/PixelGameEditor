@@ -1,10 +1,9 @@
 package model.tiles;
 
 import java.io.Serializable;
+import java.util.List;
 
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
+import controller.ProjectController;
 import model.properties.ProjectProperties;
 
 public class Tile implements Serializable {
@@ -13,23 +12,35 @@ public class Tile implements Serializable {
 	private int id;
 	private int width;
 	private int height;
-	private TilesSourceImage tilesSourceImage;
+	private transient TilesSourceImage tilesSourceImage;
 	private String path;
-	private float positionX;
-	private float positionY;
+	private int positionX;
+	private int positionY;
+	private TilesType type;
 	public Tile() {
+		
 		this.id = count++;
+		List<Integer> ids = ProjectController.getInstance().getTilesId();
+		while(ids.contains(this.id)) {
+			this.id++;
+		}
 		this.width = ProjectProperties.getInstance().getTileSize();
 		this.height = ProjectProperties.getInstance().getTileSize();
 	}
-	public Tile(String path, float positionX, float positionY) {
-		//this.canvas = new Canvas(50, 50);
+	public Tile(String path, int positionX, int positionY, TilesType type) {
 		this.id = count++;
+		List<Integer> ids = ProjectController.getInstance().getTilesId();
+		
+		while(ids.contains(this.id)) {
+			this.id++;
+		}
+		ProjectController.getInstance().addId(this.id);
 		this.width = ProjectProperties.getInstance().getTileSize();
 		this.height = ProjectProperties.getInstance().getTileSize();
 		this.path = path;
 		this.positionX = positionX;
 		this.positionY = positionY;
+		this.type = type;
 	}
 	public int getWidth() {
 		return width;
@@ -37,10 +48,10 @@ public class Tile implements Serializable {
 	public int getHeight() {
 		return height;
 	}
-	public float getPositionX() {
+	public int getPositionX() {
 		return positionX;
 	}
-	public float getPositionY() {
+	public int getPositionY() {
 		return positionY;
 	}
 	public TilesSourceImage getTilesSourceImage() {
@@ -52,5 +63,17 @@ public class Tile implements Serializable {
 	}
 	public int getId() {
 		return this.id;
+	}
+	public String getPath() {
+		return path;
+	}
+	public TilesType getType() {
+		return this.type;
+	}
+	public void setParams(String src, int positionX, int positionY, TilesType type) {
+		this.path = src;
+		this.positionX = positionX;
+		this.positionY = positionY;
+		this.type = type;
 	}
 }

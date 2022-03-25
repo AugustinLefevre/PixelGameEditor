@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProjectController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Coverage Report</a> &gt; <a href="index.source.html" class="el_package">controller</a> &gt; <span class="el_source">ProjectController.java</span></div><h1>ProjectController.java</h1><pre class="source lang-java linenums">package controller;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
+import gui.Main;
+import model.project.Project;
+import model.properties.ProjectProperties;
+import data.ProjectData;
+import model.tiles.TilesSource;
+
+<span class="nc" id="L13">public class ProjectController {</span>
+<span class="nc" id="L14">	private ProjectData db = ProjectData.getInstance();</span>
+	private static ProjectController instance;
+	
+	public TilesSource addTilesSource(String path) {
+		
+<span class="nc" id="L19">		TilesSource ts = new TilesSource();</span>
+<span class="nc" id="L20">		ts.setPath(path);</span>
+<span class="nc" id="L21">		Project.getInstance().addTilesSource(ts);</span>
+<span class="nc" id="L22">		return ts;</span>
+		
+	}
+	public List&lt;TilesSource&gt; getTilesSource(){
+<span class="nc" id="L26">		return Project.getInstance().getTilesSource();</span>
+	}
+	public void saveToFile(File file) throws IOException {
+<span class="nc" id="L29">		db.saveToFile(file);</span>
+<span class="nc" id="L30">		PrefsController.getInstance().saveProjectPath(file.getAbsolutePath());</span>
+<span class="nc" id="L31">	}</span>
+	public void loadFromFile(File file) throws IOException {
+<span class="nc" id="L33">		db.loadFromFile(file);</span>
+<span class="nc" id="L34">	}</span>
+	
+	public static ProjectController getInstance() {
+<span class="nc bnc" id="L37" title="All 2 branches missed.">		if(instance == null) {</span>
+<span class="nc" id="L38">			instance = new ProjectController();</span>
+<span class="nc" id="L39">			return instance;</span>
+		}
+<span class="nc" id="L41">		return instance;</span>
+	}
+
+	public void setProject(Project project) {
+<span class="nc" id="L45">		ProjectProperties.getInstance().setProperties(project.getProjectProperties());</span>
+<span class="nc" id="L46">		Project.getInstance().setProject(project);</span>
+<span class="nc" id="L47">	}</span>
+	public static void setPojectProperties() {
+<span class="nc" id="L49">		Project.getInstance().setProjectProperties();</span>
+<span class="nc" id="L50">	}</span>
+	public Project getProject() {
+<span class="nc" id="L52">		return Project.getInstance();</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

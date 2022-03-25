@@ -5,14 +5,16 @@ import java.io.Serializable;
 public class TilesSource implements Serializable {
 	
 	private static final long serialVersionUID = 3271609716365386466L;
-	private static  int id = 0;
+	private static  int count = 0;
+	private int id;
 	private int width;
 	private int height;
 	private String path;
 
 	private transient TilesSourceImage tilesSourceImage;
 	public TilesSource() {
-		TilesSource.id++;
+		this.id = count++;
+		
 	}
 	public int getWidth() {
 		return width;
@@ -41,7 +43,7 @@ public class TilesSource implements Serializable {
 		return tilesSourceImage;
 	}
 
-	public static int getId() {
+	public int getId() {
 		return id;
 	}
 	

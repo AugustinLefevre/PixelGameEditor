@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TilesSourceViewCursor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Coverage Report</a> &gt; <a href="index.source.html" class="el_package">gui.TilesEditor</a> &gt; <span class="el_source">TilesSourceViewCursor.java</span></div><h1>TilesSourceViewCursor.java</h1><pre class="source lang-java linenums">package gui.TilesEditor;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import javafx.application.Platform;
+import javafx.geometry.Point2D;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.robot.Robot;
+import model.properties.ProjectProperties;
+
+public class TilesSourceViewCursor extends ImageView {
+	private static TilesSourceViewCursor instance;
+	private boolean clipped;
+<span class="nc" id="L20">	private float deltaX = 0;</span>
+<span class="nc" id="L21">	private float deltaY = 0;</span>
+<span class="nc" id="L22">	private TilesSourceViewCursor() {</span>
+		try {
+			//Robot robot =  new Robot();
+<span class="nc" id="L25">			setMouseTransparent(true);</span>
+<span class="nc" id="L26">			clipped = true;</span>
+<span class="nc" id="L27">			String path = System.getProperty(&quot;user.dir&quot;) + &quot;\\resources&quot;;</span>
+<span class="nc" id="L28">			InputStream stream = new FileInputStream(path + &quot;\\tilesSelectorCursor256.png&quot;);</span>
+<span class="nc" id="L29">			Image image = new Image(stream);</span>
+<span class="nc" id="L30">			setImage(image);</span>
+
+<span class="nc" id="L32">			setFitWidth(50);</span>
+			
+<span class="nc" id="L34">			setPreserveRatio(true);</span>
+<span class="nc" id="L35">			ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);</span>
+			
+<span class="nc" id="L37">			Runnable sheduledTask = () -&gt; {</span>
+<span class="nc" id="L38">				Platform.runLater(()-&gt;{</span>
+					try {
+<span class="nc" id="L40">						modifyPosition();</span>
+<span class="nc" id="L41">					}catch(Exception e){</span>
+<span class="nc" id="L42">						System.out.println(&quot;error in scheduler :&quot; + e);</span>
+					}
+<span class="nc" id="L44">				});</span>
+<span class="nc" id="L45">			};</span>
+<span class="nc" id="L46">			ses.scheduleAtFixedRate(sheduledTask, 0, 50, TimeUnit.MILLISECONDS);</span>
+
+		
+<span class="nc" id="L49">		} catch (FileNotFoundException e) {</span>
+<span class="nc" id="L50">			e.printStackTrace();</span>
+		}
+		
+<span class="nc" id="L53">	}</span>
+	public void modifyPosition() {
+		try {
+<span class="nc bnc" id="L56" title="All 2 branches missed.">			if(!clipped) {</span>
+				try {
+<span class="nc" id="L58">					setX(TilesSourceView.getInstance().getMousePositionX());</span>
+<span class="nc" id="L59">					setY(TilesSourceView.getInstance().getMousePositionY());</span>
+<span class="nc" id="L60">				}catch(Exception e) {</span>
+<span class="nc" id="L61">					System.out.println(&quot;error on set cursor position&quot; + e);</span>
+				}
+<span class="nc" id="L63">			}</span>
+			else {
+<span class="nc" id="L65">				double sizer = TilesSourceView.getInstance().getSizer();</span>
+	
+<span class="nc" id="L67">				double clippedPosX = Math.floor(TilesSourceView.getInstance().getMousePositionX() * sizer);</span>
+<span class="nc" id="L68">				double clippedPosY = Math.floor(TilesSourceView.getInstance().getMousePositionY() * sizer);</span>
+	
+<span class="nc" id="L70">				double res = TilesSourceView.getInstance().getResolution();</span>
+	
+				try {
+<span class="nc" id="L73">					setX(clippedPosX * (res) + deltaX);</span>
+<span class="nc" id="L74">					setY(clippedPosY * (res) + deltaY);</span>
+<span class="nc" id="L75">				}catch(Exception e) {</span>
+<span class="nc" id="L76">					System.out.println(&quot;error on set cursor position&quot; + e);</span>
+				}
+			}
+			
+			
+<span class="nc" id="L81">		}catch(Exception e){</span>
+<span class="nc" id="L82">			System.out.println(&quot;error in scheduler :&quot; + e);</span>
+		}
+		
+<span class="nc" id="L85">	}</span>
+	public void setSize() {
+<span class="nc" id="L87">		double tempCursorSize = (TilesSourceView.getInstance().getWidth() /</span>
+<span class="nc" id="L88">				TilesSourceView.getInstance().getCurrentPXSize() * </span>
+<span class="nc" id="L89">				ProjectProperties.getInstance().getTileSize());</span>
+<span class="nc" id="L90">		setFitWidth(tempCursorSize);</span>
+<span class="nc" id="L91">	}</span>
+	public void switchVisibility(boolean visibility) {
+		try{
+<span class="nc" id="L94">			setVisible(visibility);</span>
+<span class="nc" id="L95">		}catch(Exception e) {</span>
+<span class="nc" id="L96">			System.out.println(e);</span>
+		}
+<span class="nc" id="L98">	}</span>
+	public static TilesSourceViewCursor getInstance() {
+<span class="nc bnc" id="L100" title="All 2 branches missed.">		if(instance == null) {</span>
+<span class="nc" id="L101">			instance = new TilesSourceViewCursor();</span>
+<span class="nc" id="L102">			return instance;</span>
+		}
+<span class="nc" id="L104">		return instance;</span>
+	}
+	public double getCursorSize() {
+<span class="nc" id="L107">		return getFitWidth();</span>
+	}
+	public void setCursorSize(double size) {
+<span class="nc" id="L110">		setFitWidth(size);</span>
+<span class="nc" id="L111">	}</span>
+	public void setDelta(float X, float Y) {
+<span class="nc" id="L113">		this.deltaX = X - (X % ProjectProperties.getInstance().getTileSize());</span>
+<span class="nc" id="L114">		this.deltaY = Y - (Y % ProjectProperties.getInstance().getTileSize());</span>
+<span class="nc" id="L115">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

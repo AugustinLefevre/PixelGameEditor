@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PrefsController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Coverage Report</a> &gt; <a href="index.source.html" class="el_package">controller</a> &gt; <span class="el_source">PrefsController.java</span></div><h1>PrefsController.java</h1><pre class="source lang-java linenums">package controller;
+
+import java.io.File;
+import java.io.IOException;
+
+import gui.TilesEditor.TilesManager;
+import gui.popup.new_project.NewProject;
+import javafx.scene.Group;
+import model.properties.Prefs;
+import data.PreferenciesDB;
+
+public class PrefsController {
+	private PreferenciesDB prefs;
+	private static PrefsController instance;
+	private File prefsFile;
+	
+<span class="nc" id="L17">	public PrefsController() throws IOException {</span>
+<span class="nc" id="L18">		this.prefs = PreferenciesDB.getInstance();</span>
+<span class="nc bnc" id="L19" title="All 2 branches missed.">		if(PreferenciesDB.getInstance().loadPrefs() != null) {</span>
+<span class="nc" id="L20">			this.prefsFile = new File(PreferenciesDB.getInstance().loadPrefs().getProjectPath());</span>
+		}
+<span class="nc" id="L22">	}</span>
+	public static PrefsController getInstance() throws IOException {
+<span class="nc bnc" id="L24" title="All 2 branches missed.">		if(instance == null) {</span>
+<span class="nc" id="L25">			instance = new PrefsController();</span>
+<span class="nc" id="L26">			return instance;</span>
+		}else {
+<span class="nc" id="L28">			return instance;</span>
+		}
+	}
+	/**
+	 * a fixer
+	 * @throws IOException
+	 */
+	public void openAutoProject() throws IOException {
+<span class="nc bnc" id="L36" title="All 2 branches missed.">		if(PreferenciesDB.getInstance().loadPrefs() != null) {</span>
+<span class="nc" id="L37">			String projectPath = PreferenciesDB.getInstance().loadPrefs().getProjectPath();</span>
+<span class="nc" id="L38">			this.prefsFile = new File(projectPath);</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">			if(this.prefsFile != null) {</span>
+<span class="nc" id="L40">				NewProject.getInstance().setVisibility(false);</span>
+<span class="nc" id="L41">				ProjectController.getInstance().loadFromFile(this.prefsFile);</span>
+<span class="nc" id="L42">				saveProjectPath(projectPath);</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">				if(PreferenciesDB.getInstance().loadPrefs().getTilesSourcePath() != null) {</span>
+<span class="nc" id="L44">					saveTilesSourcePath(PreferenciesDB.getInstance().loadPrefs().getTilesSourcePath());</span>
+				}
+<span class="nc" id="L46">				TilesManager.getInstance().leftColumnRefresh();</span>
+			}
+<span class="nc" id="L48">		}else {</span>
+<span class="nc" id="L49">			NewProject.getInstance().setVisible(true);</span>
+		
+		}
+		
+		
+<span class="nc" id="L54">	}</span>
+	public String getSavedTilesSourcePath() {
+<span class="nc" id="L56">		return Prefs.getInstance().getTilesSourcePath();</span>
+	}
+	public void saveProjectPath(String path) throws IOException {
+<span class="nc" id="L59">		Prefs.getInstance().setProjectPath(path);</span>
+<span class="nc" id="L60">		PreferenciesDB.getInstance().savePrefs(Prefs.getInstance());</span>
+<span class="nc" id="L61">	}</span>
+	public void saveTilesSourcePath(String path) throws IOException {
+<span class="nc" id="L63">		Prefs.getInstance().setTilesSourcePath(path);</span>
+<span class="nc" id="L64">		PreferenciesDB.getInstance().savePrefs(Prefs.getInstance());</span>
+<span class="nc" id="L65">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

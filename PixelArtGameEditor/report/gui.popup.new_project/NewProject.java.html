@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NewProject.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Coverage Report</a> &gt; <a href="index.source.html" class="el_package">gui.popup.new_project</a> &gt; <span class="el_source">NewProject.java</span></div><h1>NewProject.java</h1><pre class="source lang-java linenums">package gui.popup.new_project;
+
+import java.io.File;
+import java.io.IOException;
+
+import controller.PrefsController;
+import controller.ProjectController;
+import gui.MenuPanel;
+import gui.TilesEditor.TilesManager;
+//import controller.TilesSourceController;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
+import model.properties.Prefs;
+import model.properties.ProjectProperties;
+
+public class NewProject extends BorderPane{
+	
+	private static NewProject instance;
+	private VBox container;
+	private Label projectNameLabel;
+	private TextField projectNameTextField;
+	private Label tilesSizeSelectorLabel;
+	private ComboBox&lt;Integer&gt; tilesSizeSelector;
+	private Button createButton;
+	private Button openProjectButton;
+	
+	private NewProject() {
+<span class="nc" id="L38">		super();</span>
+<span class="nc" id="L39">		container = new VBox();</span>
+<span class="nc" id="L40">		projectNameLabel = new Label(&quot;Project name :&quot;);</span>
+<span class="nc" id="L41">		projectNameTextField = new TextField();</span>
+<span class="nc" id="L42">		tilesSizeSelectorLabel = new Label(&quot;Tiles size :&quot;);</span>
+<span class="nc" id="L43">		tilesSizeSelector = new ComboBox&lt;Integer&gt;();</span>
+<span class="nc" id="L44">		tilesSizeSelector.getItems().addAll(2,16, 32, 64, 128);</span>
+<span class="nc" id="L45">		createButton = new Button(&quot;Create&quot;);</span>
+<span class="nc" id="L46">		openProjectButton = new Button(&quot;Open Project&quot;);</span>
+		
+<span class="nc" id="L48">		container.getChildren().addAll(</span>
+<span class="nc" id="L49">				projectNameLabel, </span>
+<span class="nc" id="L50">				projectNameTextField,</span>
+<span class="nc" id="L51">				tilesSizeSelectorLabel,</span>
+<span class="nc" id="L52">				tilesSizeSelector,</span>
+<span class="nc" id="L53">				createButton,</span>
+<span class="nc" id="L54">				openProjectButton</span>
+				);
+		
+<span class="nc" id="L57">		setAction();</span>
+		
+<span class="nc" id="L59">		setCenter(container);</span>
+		
+<span class="nc" id="L61">		setStyle();</span>
+		
+<span class="nc" id="L63">	}</span>
+	
+	private void setStyle() {
+<span class="nc" id="L66">		container.setPadding(new Insets(5, 5, 5, 5));</span>
+<span class="nc" id="L67">		container.setPrefSize(300, 300);</span>
+<span class="nc" id="L68">		container.setSpacing(10);</span>
+		
+<span class="nc" id="L70">		setStyle(&quot;-fx-background-color: whitesmoke&quot;);</span>
+<span class="nc" id="L71">	}</span>
+	
+	private void setAction() {
+<span class="nc" id="L74">		createButton.setOnAction(new EventHandler&lt;ActionEvent&gt;() {</span>
+			
+			@Override
+			public void handle(ActionEvent arg0) {
+<span class="nc" id="L78">				boolean projecteNameIsValid = textIsValid(projectNameTextField.getText());</span>
+<span class="nc" id="L79">				boolean tilesSizeIsValid = comboBoxISValid(tilesSizeSelector);</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">				if(!projecteNameIsValid) {</span>
+<span class="nc" id="L81">					projectNameLabel.setTextFill(Color.RED);</span>
+<span class="nc" id="L82">				}else {</span>
+<span class="nc" id="L83">					projectNameLabel.setTextFill(Color.BLACK);</span>
+				}
+<span class="nc bnc" id="L85" title="All 2 branches missed.">				if(!tilesSizeIsValid) {</span>
+<span class="nc" id="L86">					tilesSizeSelectorLabel.setTextFill(Color.RED);</span>
+<span class="nc" id="L87">				}else {</span>
+<span class="nc" id="L88">					tilesSizeSelectorLabel.setTextFill(Color.BLACK);</span>
+				}
+<span class="nc bnc" id="L90" title="All 4 branches missed.">				if (tilesSizeIsValid &amp;&amp; projecteNameIsValid){</span>
+<span class="nc" id="L91">					ProjectProperties pp = ProjectProperties.getInstance();</span>
+<span class="nc" id="L92">					pp.setProjectName(projectNameTextField.getText());</span>
+<span class="nc" id="L93">					pp.setTileSize(tilesSizeSelector.getValue());</span>
+					//properties has set on Propeject properties
+<span class="nc" id="L95">					DirectoryChooser directoryChooser = new DirectoryChooser();</span>
+<span class="nc" id="L96">					directoryChooser.setTitle(&quot;Choose emplacement project&quot;);</span>
+					
+<span class="nc" id="L98">					File file = directoryChooser.showDialog(null);</span>
+<span class="nc" id="L99">					String path = file.getAbsolutePath() + &quot;\\&quot; + projectNameTextField.getText() + &quot;.mpag&quot;;</span>
+<span class="nc" id="L100">					File newProject = new File(path);</span>
+					try {
+<span class="nc" id="L102">						ProjectController.getInstance().saveToFile(newProject);</span>
+<span class="nc" id="L103">					} catch (IOException e) {</span>
+						// TODO Auto-generated catch block
+<span class="nc" id="L105">						e.printStackTrace();</span>
+					}
+<span class="nc" id="L107">					NewProject.this.setVisible(false);</span>
+				}
+				
+<span class="nc" id="L110">			}</span>
+		});
+		
+<span class="nc" id="L113">		openProjectButton.setOnAction(new EventHandler&lt;ActionEvent&gt;() {</span>
+
+			@Override
+			public void handle(ActionEvent arg0) {
+<span class="nc" id="L117">				FileChooser chooser = new FileChooser();</span>
+<span class="nc" id="L118">				chooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter(&quot;Pixel Art Game Editor&quot;, &quot;*.mpag&quot;));</span>
+<span class="nc" id="L119">				File file = chooser.showOpenDialog(null);</span>
+<span class="nc bnc" id="L120" title="All 2 branches missed.">				if(file != null) {</span>
+					try {
+<span class="nc" id="L122">						ProjectController.getInstance().loadFromFile(file);</span>
+<span class="nc" id="L123">						PrefsController.getInstance().saveProjectPath(file.getAbsolutePath());</span>
+<span class="nc" id="L124">						TilesManager.getInstance().leftColumnRefresh();</span>
+<span class="nc" id="L125">					} catch (IOException e1) {</span>
+<span class="nc" id="L126">						System.out.println(e1.getMessage());</span>
+					}
+				}
+
+<span class="nc" id="L130">				NewProject.this.setVisibility(false);</span>
+<span class="nc" id="L131">			}</span>
+		});
+<span class="nc" id="L133">	}</span>
+	private boolean comboBoxISValid(ComboBox&lt;Integer&gt; cb){
+<span class="nc bnc" id="L135" title="All 2 branches missed.">		if(cb.getValue() == null) {</span>
+<span class="nc" id="L136">			return false;</span>
+		}else {
+<span class="nc" id="L138">			return true;</span>
+		}
+	}
+	private boolean textIsValid(String str) {
+		// special char a completer
+<span class="nc" id="L143">		CharSequence[] speChar = {&quot;/&quot;, &quot; &quot;, &quot;\\&quot;, &quot;&amp;&quot;, &quot;\&quot;&quot;, &quot;|&quot;}; </span>
+<span class="nc bnc" id="L144" title="All 2 branches missed.">		for(CharSequence c : speChar) {</span>
+<span class="nc bnc" id="L145" title="All 2 branches missed.">			if(str.contains(c)) {</span>
+<span class="nc" id="L146">				return false;</span>
+			}
+		}
+<span class="nc bnc" id="L149" title="All 4 branches missed.">		if(str.length() &lt;= 1 || str == null) {</span>
+<span class="nc" id="L150">			return false;</span>
+		}
+<span class="nc" id="L152">		return true;</span>
+	}
+	public static NewProject getInstance() {
+<span class="nc bnc" id="L155" title="All 2 branches missed.">		if(instance == null) {</span>
+<span class="nc" id="L156">			instance = new NewProject();</span>
+<span class="nc" id="L157">			return instance;</span>
+		}
+<span class="nc" id="L159">		return instance;</span>
+	}
+	public void setVisibility(boolean bool) {
+<span class="nc" id="L162">		setVisible(bool);</span>
+<span class="nc" id="L163">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

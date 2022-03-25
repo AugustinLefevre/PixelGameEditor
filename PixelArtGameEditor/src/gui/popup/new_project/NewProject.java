@@ -5,7 +5,6 @@ import java.io.IOException;
 
 import controller.PrefsController;
 import controller.ProjectController;
-import gui.MenuPanel;
 import gui.TilesEditor.TilesManager;
 //import controller.TilesSourceController;
 import javafx.event.ActionEvent;
@@ -20,7 +19,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
-import model.properties.Prefs;
 import model.properties.ProjectProperties;
 
 public class NewProject extends BorderPane{
@@ -33,6 +31,7 @@ public class NewProject extends BorderPane{
 	private ComboBox<Integer> tilesSizeSelector;
 	private Button createButton;
 	private Button openProjectButton;
+	private Button cancelButton;
 	
 	private NewProject() {
 		super();
@@ -44,6 +43,7 @@ public class NewProject extends BorderPane{
 		tilesSizeSelector.getItems().addAll(2,16, 32, 64, 128);
 		createButton = new Button("Create");
 		openProjectButton = new Button("Open Project");
+		cancelButton = new Button("Cancel");
 		
 		container.getChildren().addAll(
 				projectNameLabel, 
@@ -51,8 +51,10 @@ public class NewProject extends BorderPane{
 				tilesSizeSelectorLabel,
 				tilesSizeSelector,
 				createButton,
-				openProjectButton
+				openProjectButton,
+				cancelButton
 				);
+		cancelButton.setVisible(false);
 		
 		setAction();
 		
@@ -69,8 +71,17 @@ public class NewProject extends BorderPane{
 		
 		setStyle("-fx-background-color: whitesmoke");
 	}
-	
+	public void setCancelButtonVisibility(boolean bool) {
+		cancelButton.setVisible(bool);
+	}
 	private void setAction() {
+		cancelButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent arg0) {
+				setVisible(false);
+			}
+		});
 		createButton.setOnAction(new EventHandler<ActionEvent>() {
 			
 			@Override
@@ -100,6 +111,7 @@ public class NewProject extends BorderPane{
 					File newProject = new File(path);
 					try {
 						ProjectController.getInstance().saveToFile(newProject);
+						ProjectController.getInstance().emptyProject();
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -121,9 +133,10 @@ public class NewProject extends BorderPane{
 					try {
 						ProjectController.getInstance().loadFromFile(file);
 						PrefsController.getInstance().saveProjectPath(file.getAbsolutePath());
-						TilesManager.getInstance().leftColumnRefresh();
+						TilesManager.getInstance().tilesSourceThumbnailColumnRefresh();
+						TilesManager.getInstance().tilesColumnRefresh();
 					} catch (IOException e1) {
-						System.out.println(e1.getMessage());
+						System.err.println(e1.getMessage());
 					}
 				}
 

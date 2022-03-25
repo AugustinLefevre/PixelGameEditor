@@ -19,9 +19,12 @@ public class TilesSourceViewCursor extends ImageView {
 	private float deltaY = 0;
 	private int actualPositionX = 0;
 	private int actualPositionY = 0;
+	private double relativPositionX;
+	private double relativPositionY;
+	private int posInTilesSourceX;
+	private int posInTilesSourceY;
 	private TilesSourceViewCursor() {
 		try {
-			//Robot robot =  new Robot();
 			setMouseTransparent(true);
 			clipped = true;
 			String path = System.getProperty("user.dir") + "\\resources";
@@ -64,16 +67,36 @@ public class TilesSourceViewCursor extends ImageView {
 			else {
 				double sizer = TilesSourceView.getInstance().getSizer();
 	
-				double clippedPosX = Math.floor(TilesSourceView.getInstance().getMousePositionX() * sizer);
-				double clippedPosY = Math.floor(TilesSourceView.getInstance().getMousePositionY() * sizer);
-	
-				double res = TilesSourceView.getInstance().getResolution();
+				int clippedPosX = (int)(TilesSourceView.getInstance().getMousePositionX() * sizer);
+				int clippedPosY = (int)(TilesSourceView.getInstance().getMousePositionY() * sizer);
+				
+				int res = TilesSourceView.getInstance().getResolution();
 	
 				try {
 					setX(clippedPosX * (res) + deltaX);
 					setY(clippedPosY * (res) + deltaY);
-					this.actualPositionX = (int) (clippedPosX * (res));
-					this.actualPositionY = (int) (clippedPosY * (res));
+					this.posInTilesSourceX = (int) clippedPosX - (int) (TilesSourceView.getInstance().getCurrentPositionX()/res);
+					this.posInTilesSourceY = (int) clippedPosY - (int) (TilesSourceView.getInstance().getCurrentPositionY()/res);
+				
+					int maxDeplacement = TilesSourceView.getInstance().getCurrentPXSize() - ProjectProperties.getInstance().getTileSize();
+					
+					if(this.posInTilesSourceX < 0) {
+						setX(TilesSourceView.getInstance().getCurrentPositionX());
+						this.posInTilesSourceX = 0;
+					}
+					if(this.posInTilesSourceY < 0) {
+						setY(TilesSourceView.getInstance().getCurrentPositionY());
+						this.posInTilesSourceY = 0;
+					}
+					if(this.posInTilesSourceX > maxDeplacement) {
+						setX(TilesSourceView.getInstance().getCurrentPositionX() + maxDeplacement * res);
+						this.posInTilesSourceX = maxDeplacement;
+					}
+					if(this.posInTilesSourceY > maxDeplacement) {
+						setY(TilesSourceView.getInstance().getCurrentPositionY() + maxDeplacement * res);
+						this.posInTilesSourceY = maxDeplacement;
+					}
+					
 				}catch(Exception e) {
 					System.err.println("error on set cursor position" + e);
 				}
@@ -85,7 +108,8 @@ public class TilesSourceViewCursor extends ImageView {
 		
 	}
 	public void setSize() {
-		double tempCursorSize = (TilesSourceView.getInstance().getWidth() /
+		double tempCursorSize = (
+				TilesSourceView.getInstance().getImageWidth() /
 				TilesSourceView.getInstance().getCurrentPXSize() * 
 				ProjectProperties.getInstance().getTileSize());
 		setFitWidth(tempCursorSize);
@@ -125,5 +149,17 @@ public class TilesSourceViewCursor extends ImageView {
 	}
 	public int getActualPositionY() {
 		return actualPositionY;
+	}
+	public double getRelativPositionX() {
+		return relativPositionX;
+	}
+	public double getRelativPositionY() {
+		return relativPositionY;
+	}
+	public int getPosInTilesSourceX() {
+		return posInTilesSourceX;
+	}
+	public int getPosInTilesSourceY() {
+		return posInTilesSourceY;
 	}
 }

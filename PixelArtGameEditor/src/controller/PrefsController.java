@@ -61,4 +61,13 @@ public class PrefsController {
 		Prefs.getInstance().setTilesSourcePath(path);
 		PreferenciesDB.getInstance().savePrefs(Prefs.getInstance());
 	}
+	public boolean getConfirm() {
+		return Prefs.getInstance().getConfirm();
+	}
+	public void setConfirm(boolean confirm) {
+		Prefs.getInstance().setConfirm(confirm);
+	}
+	public String getProjectPath() {
+		return Prefs.getInstance().getProjectPath();
+	}
 }

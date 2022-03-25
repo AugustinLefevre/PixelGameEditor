@@ -2,6 +2,7 @@ package gui.TilesEditor;
 
 import java.io.FileNotFoundException;
 
+import gui.popup.tile_editor.TileEditor;
 import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -17,10 +18,9 @@ public class ThumbnailTile extends Canvas {
 		gc.setImageSmoothing(false);
 		gc.drawImage(image, tile.getPositionX(), tile.getPositionY(), tile.getWidth(), tile.getHeight(), 0, 0, 50 , 50);
 		addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-
 			@Override
 			public void handle(MouseEvent arg0) {
-				
+				TileEditor.getInstance(tile).setVisible(true);
 			}
 		});
 	}

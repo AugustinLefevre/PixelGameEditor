@@ -6,6 +6,7 @@ public class Prefs implements Serializable {
 	private static final long serialVersionUID = 7812480018812295809L;
 	private String projectPath;
 	private String tilesSourcePath;
+	private boolean confirm;
 	private static Prefs instance;
 	
 	public String getTilesSourcePath() {
@@ -29,4 +30,11 @@ public class Prefs implements Serializable {
 		}
 		return instance;
 	}
+	public void setConfirm(boolean confirm) {
+		this.confirm = confirm;
+	}
+	public boolean getConfirm() {
+		return this.confirm;
+	}
+	
 }

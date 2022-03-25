@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProjectProperties.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Coverage Report</a> &gt; <a href="index.source.html" class="el_package">model.properties</a> &gt; <span class="el_source">ProjectProperties.java</span></div><h1>ProjectProperties.java</h1><pre class="source lang-java linenums">package model.properties;
+
+import java.io.Serializable;
+
+import model.project.Project;
+
+<span class="nc" id="L7">public class ProjectProperties implements Serializable {</span>
+	private static final long serialVersionUID = 3846525459406027524L;
+	private static ProjectProperties instance;
+	private String projectName;
+	private int tileSize;
+	
+	public String getProjectName() {
+<span class="nc" id="L14">		return projectName;</span>
+	}
+	public void setProjectName(String projectName) {
+<span class="nc" id="L17">		this.projectName = projectName;</span>
+<span class="nc" id="L18">	}</span>
+	public int getTileSize() {
+<span class="nc" id="L20">		return tileSize;</span>
+	}
+	public void setTileSize(int tileSize) {
+<span class="nc" id="L23">		this.tileSize = tileSize;</span>
+<span class="nc" id="L24">	}</span>
+	public void setProperties(ProjectProperties pp) {
+<span class="nc" id="L26">		instance = pp;</span>
+<span class="nc" id="L27">	}</span>
+	public static ProjectProperties getInstance() {
+<span class="nc bnc" id="L29" title="All 2 branches missed.">		if(instance == null) {</span>
+<span class="nc" id="L30">			instance = new ProjectProperties();</span>
+		}
+<span class="nc" id="L32">		return instance;</span>
+		
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

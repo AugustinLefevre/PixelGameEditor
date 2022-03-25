@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TilesSourceView.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCo Coverage Report</a> &gt; <a href="index.source.html" class="el_package">gui.TilesEditor</a> &gt; <span class="el_source">TilesSourceView.java</span></div><h1>TilesSourceView.java</h1><pre class="source lang-java linenums">package gui.TilesEditor;
+
+import java.text.DecimalFormat;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import com.sun.jdi.event.Event;
+
+import javafx.application.Platform;
+import javafx.event.EventHandler;
+import javafx.geometry.Point2D;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
+import javafx.scene.robot.Robot;
+import model.properties.ProjectProperties;
+/**
+ * @author augustin.lefevre
+ * Singleton of the Tiles source viewer displayed in the tiles manager
+ */
+class TilesSourceView extends Canvas{
+	//private Robot robot;
+	//private TilesSourceViewCursor tilesSourceViewCursor;
+<span class="nc" id="L28">	private static boolean  mouseIsIn = false; //check if the mouse is in the tile manager</span>
+	private static TilesSourceView instance;//tiles source viewer instance
+<span class="nc" id="L30">	private static GraphicsContext gc;</span>
+	private Image image;
+<span class="nc" id="L32">	private int currentPXSize = 0;</span>
+	private int currentTilesSourceSize;
+	private int mousePositionX;
+	private int mousePositionY;
+<span class="nc" id="L36">	private float sizer = 0;</span>
+<span class="nc" id="L37">	private int resolution = 0;</span>
+<span class="nc" id="L38">	public boolean isScrolling = false;</span>
+<span class="nc" id="L39">	private float additivPositionX = 0;</span>
+<span class="nc" id="L40">	private float positionX = 0;</span>
+<span class="nc" id="L41">	private float additivPositionY = 0;</span>
+<span class="nc" id="L42">	private float currentPositionX = 0;</span>
+<span class="nc" id="L43">	private float currentPositionY = 0;</span>
+<span class="nc" id="L44">	private float positionY = 0;</span>
+	
+	public TilesSourceView() {
+		
+<span class="nc" id="L48">		super(512, 512);</span>
+<span class="nc" id="L49">		gc = getGraphicsContext2D();</span>
+<span class="nc" id="L50">		gc.setImageSmoothing(false);</span>
+		
+<span class="nc" id="L52">		addEventHandler(MouseEvent.MOUSE_MOVED, new EventHandler&lt;MouseEvent&gt;() {</span>
+
+			@Override
+			public void handle(MouseEvent e) {
+<span class="nc" id="L56">				mousePositionX = (int) e.getX();</span>
+<span class="nc" id="L57">				mousePositionY = (int) e.getY();	</span>
+<span class="nc" id="L58">			}</span>
+		});
+<span class="nc" id="L60">		addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler&lt;MouseEvent&gt;() {</span>
+			@Override
+			public void handle(MouseEvent e) {
+<span class="nc" id="L64">			}</span>
+			
+		});
+		
+<span class="nc" id="L68">		addEventHandler(MouseEvent.MOUSE_DRAGGED, new EventHandler&lt;MouseEvent&gt;() {</span>
+
+			@Override
+			public void handle(MouseEvent e) {
+<span class="nc" id="L72">				TilesSourceView.this.additivPositionX = (float) (e.getX() - TilesSourceView.this.positionX);</span>
+<span class="nc" id="L73">				TilesSourceView.this.additivPositionY = (float) (e.getY() - TilesSourceView.this.positionY);</span>
+<span class="nc" id="L74">				modifyPosition(TilesSourceView.this.additivPositionX + TilesSourceView.this.currentPositionX , TilesSourceView.this.additivPositionY + TilesSourceView.this.currentPositionY );</span>
+<span class="nc" id="L75">			}</span>
+		});
+	
+<span class="nc" id="L78">		addEventHandler(MouseEvent.MOUSE_RELEASED, new EventHandler&lt;MouseEvent&gt;() {</span>
+			@Override
+			public void handle(MouseEvent e) {
+<span class="nc" id="L81">				TilesSourceView.this.currentPositionX += (float) TilesSourceView.this.additivPositionX;</span>
+<span class="nc" id="L82">				TilesSourceView.this.currentPositionY += (float) TilesSourceView.this.additivPositionY;</span>
+<span class="nc" id="L83">				TilesSourceViewCursor.getInstance().setDelta(TilesSourceView.this.currentPositionX, TilesSourceView.this.currentPositionY);</span>
+				
+<span class="nc" id="L85">			}</span>
+		});
+<span class="nc" id="L87">		addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler&lt;MouseEvent&gt;() {</span>
+			@Override
+			public void handle(MouseEvent e) {
+<span class="nc" id="L90">				TilesSourceView.this.positionX = (float) e.getX();</span>
+<span class="nc" id="L91">				TilesSourceView.this.positionY = (float) e.getY();</span>
+<span class="nc" id="L92">			}</span>
+		});
+		
+<span class="nc" id="L95">		addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler&lt;MouseEvent&gt;() {</span>
+			@Override
+			public void handle(MouseEvent e) {
+<span class="nc" id="L98">				mouseIsIn = true;</span>
+				
+<span class="nc" id="L100">			}</span>
+		});
+<span class="nc" id="L102">		addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler&lt;MouseEvent&gt;() {</span>
+			@Override
+			public void handle(MouseEvent e) {
+<span class="nc" id="L105">				mouseIsIn = false;</span>
+<span class="nc" id="L106">			}</span>
+		});
+<span class="nc" id="L108">		addEventHandler(ScrollEvent.SCROLL, new EventHandler&lt;ScrollEvent&gt;() {</span>
+			public void handle(ScrollEvent e) {
+<span class="nc bnc" id="L110" title="All 4 branches missed.">				boolean canZoom = (getWidth() &gt; 512 )? true: e.getDeltaY() &gt; 0;</span>
+<span class="nc bnc" id="L111" title="All 4 branches missed.">				boolean canDezoom = (getWidth() &lt; 1512 )? true: e.getDeltaY() &lt; 0;</span>
+<span class="nc bnc" id="L112" title="All 6 branches missed.">				if(mouseIsIn &amp;&amp; canZoom &amp;&amp; canDezoom) {</span>
+<span class="nc" id="L113">					double zoomFactor = 1.05;</span>
+<span class="nc" id="L114">					double deltaY = e.getDeltaY();</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">					if(deltaY &lt; 0)</span>
+<span class="nc" id="L116">						zoomFactor = 2 - zoomFactor;</span>
+					
+<span class="nc" id="L118">					double newSizeX = TilesSourceView.this.getWidth() * zoomFactor</span>
+<span class="nc" id="L119">							- ((</span>
+<span class="nc" id="L120">									Math.round(TilesSourceView.this.getWidth() * 100) / 100</span>
+									
+<span class="nc" id="L122">									* zoomFactor)</span>
+<span class="nc" id="L123">							% image.getWidth());</span>
+					
+<span class="nc" id="L125">					double newSizeY = TilesSourceView.this.getHeight() * zoomFactor</span>
+<span class="nc" id="L126">							- ((</span>
+<span class="nc" id="L127">									Math.round(TilesSourceView.this.getHeight() * 100) / 100</span>
+<span class="nc" id="L128">									* zoomFactor)</span>
+<span class="nc" id="L129">							% image.getHeight());</span>
+					
+<span class="nc" id="L131">					TilesSourceView.this.setWidth(newSizeX);</span>
+<span class="nc" id="L132">					TilesSourceView.this.setHeight(newSizeY);</span>
+<span class="nc" id="L133">					TilesSourceView.this.gc.drawImage(TilesSourceView.this.image, 0, 0, newSizeX, newSizeY);</span>
+<span class="nc" id="L134">					TilesSourceView.this.currentTilesSourceSize = (int) newSizeX;</span>
+<span class="nc" id="L135">					TilesSourceViewCursor.getInstance().setSize();</span>
+					
+<span class="nc" id="L137">					setCursorParams();</span>
+				}
+
+<span class="nc" id="L140">			}</span>
+		});
+<span class="nc" id="L142">	}</span>
+	public double getSizer() {
+<span class="nc" id="L144">		return sizer;</span>
+	}
+	public double getResolution() {
+<span class="nc" id="L147">		return resolution;</span>
+	}
+	
+	/**
+	 * display the tiles source image in the tiles source viewer 
+	 * @param image
+	 */
+	public void displaySource(Image image) {
+<span class="nc" id="L155">		this.image = image;</span>
+<span class="nc" id="L156">		this.currentPXSize = (int) image.getWidth();</span>
+<span class="nc" id="L157">		currentTilesSourceSize =  (int) (getWidth() - getWidth()%image.getWidth());</span>
+<span class="nc" id="L158">		gc.drawImage(image, 0, 0, currentTilesSourceSize, currentTilesSourceSize);</span>
+<span class="nc" id="L159">		TilesSourceViewCursor.getInstance().setSize();</span>
+<span class="nc" id="L160">		setCursorParams();</span>
+<span class="nc" id="L161">	}</span>
+	public void setCursorParams() {
+<span class="nc" id="L163">		Platform.runLater(new Runnable() {</span>
+			
+			@Override
+			public void run() {
+<span class="nc" id="L167">				float width = (float)getWidth();</span>
+		
+<span class="nc" id="L169">				sizer = currentPXSize / width;</span>
+<span class="nc" id="L170">				sizer =  (Math.round(sizer*1000)/1000f);</span>
+<span class="nc" id="L171">				resolution = (int) (width / currentPXSize);</span>
+				
+<span class="nc" id="L173">			}</span>
+		});
+		
+<span class="nc" id="L176">	}</span>
+	/**
+	 * Get the tile source viewer instance
+	 * @return TilesSourceView
+	 */
+	public static TilesSourceView getInstance() {
+<span class="nc bnc" id="L182" title="All 2 branches missed.">		if(instance == null) {</span>
+<span class="nc" id="L183">			instance = new TilesSourceView();</span>
+		}
+<span class="nc" id="L185">		return instance;</span>
+	}
+	private void modifyPosition(double positionX, double positionY) {
+<span class="nc" id="L188">		gc.drawImage(image, positionX, positionY, currentTilesSourceSize, currentTilesSourceSize);</span>
+<span class="nc" id="L189">	}</span>
+	public int getCurrentPXSize() {
+<span class="nc" id="L191">		return currentPXSize;</span>
+	}
+	public float getCurrentTilesSourceSize() {
+<span class="nc" id="L194">		return currentTilesSourceSize;</span>
+	}
+	public int getMousePositionX() {
+<span class="nc" id="L197">		return mousePositionX;</span>
+	}
+	public int getMousePositionY() {
+<span class="nc" id="L200">		return mousePositionY;</span>
+	}
+	public float getPositionX() {
+<span class="nc" id="L203">		return positionX;</span>
+	}
+	public float getPositionY() {
+<span class="nc" id="L206">		return positionY;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
