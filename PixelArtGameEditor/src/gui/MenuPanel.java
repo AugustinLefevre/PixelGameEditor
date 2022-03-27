@@ -8,7 +8,7 @@ import java.util.Map;
 
 import controller.PrefsController;
 import controller.ProjectController;
-import gui.TilesEditor.TilesManager;
+import gui.tiles.tiles_editor.TilesManager;
 import gui.popup.new_project.NewProject;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -158,7 +158,8 @@ public class MenuPanel extends MenuBar{
 						ProjectController.getInstance().loadFromFile(file);
 						PrefsController.getInstance().saveProjectPath(file.getAbsolutePath());
 						TilesManager.getInstance().tilesSourceThumbnailColumnRefresh();
-						TilesManager.getInstance().tilesColumnRefresh();
+						//TilesManager.getInstance().tilesColumnRefresh();
+						TilesManager.getInstance().getTilesLibrary().refreshAll();
 						PrefsController.getInstance().setConfirm(false);
 					} catch (IOException e1) {
 						System.err.println(e1.getMessage());

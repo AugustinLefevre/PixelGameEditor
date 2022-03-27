@@ -1,4 +1,4 @@
-package gui.TilesEditor;
+package gui.tiles.tiles_editor;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

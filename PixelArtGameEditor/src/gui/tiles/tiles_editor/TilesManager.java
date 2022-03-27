@@ -1,4 +1,4 @@
-package gui.TilesEditor;
+package gui.tiles.tiles_editor;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -8,6 +8,7 @@ import java.util.List;
 import controller.PrefsController;
 import controller.ProjectController;
 import gui.Main;
+import gui.tiles.library.TilesLibraryEditable;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -15,16 +16,14 @@ import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
-import model.tiles.Tile;
 import model.tiles.TilesSource;
 
 public class TilesManager extends BorderPane{
 	private VBox leftDisplayer;
 	private VBox tilesSourcesDisplayer;
-	private GridPane tilesDisplayer;
+	private TilesLibraryEditable tilesLibrary;
 	private static Group tilesSourceCanvas;
 	private Button buttonImport;
 	private static TilesManager instance;
@@ -34,6 +33,7 @@ public class TilesManager extends BorderPane{
 	 */
 	private TilesManager(){
 		super();
+		this.tilesLibrary = new TilesLibraryEditable();
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Import tiles source");
 		
@@ -44,7 +44,6 @@ public class TilesManager extends BorderPane{
 		sizeX = (int)Main.getInstance().getScene().getWidth();
 		sizeY = (int)Main.getInstance().getScene().getHeight();
 		setPrefSize(sizeX, sizeY);
-		
 		
 		setStyle("-fx-background-color: #2f4f4f");
 	
@@ -65,17 +64,9 @@ public class TilesManager extends BorderPane{
 		this.tilesSourcesDisplayer.setMaxHeight(500);
 		this.tilesSourcesDisplayer.setStyle("-fx-background-color: #8f8f8f");
 		
-		this.tilesDisplayer = new GridPane();
-		this.tilesDisplayer.setPrefHeight(500);
-		this.tilesDisplayer.setMaxHeight(500);
-		this.tilesDisplayer.setStyle("-fx-background-color: #8f8f8f");
-		
 		ScrollPane tilesSourceScrollPane = new ScrollPane();
 		tilesSourceScrollPane.setPrefWidth(115);
 		tilesSourceScrollPane.setContent(this.tilesSourcesDisplayer);
-		
-		ScrollPane tilesScrollPane = new ScrollPane();
-		tilesScrollPane.setContent(this.tilesDisplayer);
 		
 		this.buttonImport = new Button("import source");
 		buttonImport.setOnAction(new EventHandler<ActionEvent>() {
@@ -105,12 +96,13 @@ public class TilesManager extends BorderPane{
 		});
 		this.leftDisplayer.getChildren().add(buttonImport);
 		this.leftDisplayer.getChildren().add(tilesSourceScrollPane);
-		this.leftDisplayer.getChildren().add(tilesScrollPane);
+		this.leftDisplayer.getChildren().add(this.tilesLibrary);
+		
 		setLeft(leftDisplayer);
 		
 		try {
 			tilesSourceThumbnailColumnRefresh();
-			tilesColumnRefresh();
+			this.tilesLibrary.refresh();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -132,25 +124,6 @@ public class TilesManager extends BorderPane{
 		}	
 		
 	}
-	public void tilesColumnRefresh() throws FileNotFoundException {
-		
-		if(ProjectController.getInstance().getTiles() != null) {
-			this.tilesDisplayer.getChildren().clear();
-			List<Tile> tiles = ProjectController.getInstance().getTiles();
-			int count = 1;
-			int count2 = 0;
-			for(Tile tile : tiles) {
-				if(count++ % 2 == 0) {
-					this.tilesDisplayer.add(new ThumbnailTile(tile), 1, count2);
-					count2++;
-				}else {
-					this.tilesDisplayer.add(new ThumbnailTile(tile), 0, count2);
-				}
-				
-			}
-		}	
-		
-	}
 	/**
 	 * modify the Tiles Source view
 	 * @param ts
@@ -163,7 +136,9 @@ public class TilesManager extends BorderPane{
 		tsv.displaySource(ts.getTilesSourceImage().getImage());
 		tilesSourceCanvas.getChildren().add(tsv);
 	}
-	
+	public TilesLibraryEditable getTilesLibrary() {
+		return tilesLibrary;
+	}
 	public static TilesManager getInstance() {
 		if(instance == null) {
 			instance = new TilesManager();

@@ -3,7 +3,8 @@ package gui;
 import java.util.Arrays;
 import java.util.List;
 
-import gui.TilesEditor.TilesManager;
+import gui.map.map_editor.MapManager;
+import gui.tiles.tiles_editor.TilesManager;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
@@ -17,7 +18,7 @@ public class AppTab extends TabPane{
 	private AppTab() {
 		super();
 		tabs = Arrays.asList(
-	        new Tab("Map editor", new Label("Show Map Editor")),
+	        new Tab("Map editor", MapManager.getInstance()),
 	        new Tab("Tiles manager"  , TilesManager.getInstance()),
 	        new Tab("Tile animator", new Label("show tile animator")),
 	        new Tab("Characters editor" , new Label("Show Characters editor")),

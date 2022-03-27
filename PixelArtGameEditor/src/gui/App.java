@@ -7,7 +7,7 @@ import java.util.Optional;
 
 import controller.PrefsController;
 import controller.ProjectController;
-import gui.TilesEditor.TilesManager;
+import gui.tiles.tiles_editor.TilesManager;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
@@ -34,7 +34,8 @@ public class App extends Application{
 	    stage.show();
 		PrefsController.getInstance().openAutoProject();
 		TilesManager.getInstance().tilesSourceThumbnailColumnRefresh();
-		TilesManager.getInstance().tilesColumnRefresh();
+		TilesManager.getInstance().getTilesLibrary().refreshAll();
+		//TilesManager.getInstance().tilesColumnRefresh();
 		
 		stage.getScene().getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, new EventHandler<WindowEvent>() {
 			@Override

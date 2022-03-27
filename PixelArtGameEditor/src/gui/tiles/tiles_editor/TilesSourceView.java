@@ -1,4 +1,4 @@
-package gui.TilesEditor;
+package gui.tiles.tiles_editor;
 
 import gui.Main;
 import gui.popup.tile_editor.TileEditor;

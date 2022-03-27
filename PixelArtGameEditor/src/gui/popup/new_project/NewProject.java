@@ -5,8 +5,7 @@ import java.io.IOException;
 
 import controller.PrefsController;
 import controller.ProjectController;
-import gui.TilesEditor.TilesManager;
-//import controller.TilesSourceController;
+import gui.tiles.tiles_editor.TilesManager;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -134,7 +133,7 @@ public class NewProject extends BorderPane{
 						ProjectController.getInstance().loadFromFile(file);
 						PrefsController.getInstance().saveProjectPath(file.getAbsolutePath());
 						TilesManager.getInstance().tilesSourceThumbnailColumnRefresh();
-						TilesManager.getInstance().tilesColumnRefresh();
+						TilesManager.getInstance().getTilesLibrary().refreshAll();
 					} catch (IOException e1) {
 						System.err.println(e1.getMessage());
 					}

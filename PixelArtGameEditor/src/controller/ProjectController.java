@@ -8,7 +8,7 @@ import java.util.List;
 import model.project.Project;
 import model.properties.ProjectProperties;
 import data.ProjectData;
-import gui.TilesEditor.TilesManager;
+import gui.tiles.tiles_editor.TilesManager;
 import gui.popup.tile_editor.TileEditor;
 import model.tiles.Tile;
 import model.tiles.TilesSource;
@@ -80,7 +80,7 @@ public class ProjectController {
 		Project.getInstance().emptyProject();
 		try {
 			TilesManager.getInstance().tilesSourceThumbnailColumnRefresh();
-			TilesManager.getInstance().tilesColumnRefresh();
+			TilesManager.getInstance().getTilesLibrary().refreshAll();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}

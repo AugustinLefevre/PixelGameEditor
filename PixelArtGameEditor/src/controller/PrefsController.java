@@ -3,7 +3,7 @@ package controller;
 import java.io.File;
 import java.io.IOException;
 
-import gui.TilesEditor.TilesManager;
+import gui.tiles.tiles_editor.TilesManager;
 import gui.popup.new_project.NewProject;
 import model.properties.Prefs;
 import data.PreferenciesDB;
@@ -41,14 +41,12 @@ public class PrefsController {
 					saveTilesSourcePath(PreferenciesDB.getInstance().loadPrefs().getTilesSourcePath());
 				}
 				TilesManager.getInstance().tilesSourceThumbnailColumnRefresh();
-				TilesManager.getInstance().tilesColumnRefresh();
+				TilesManager.getInstance().getTilesLibrary().refreshAll();
 			}
 		}else {
 			NewProject.getInstance().setVisible(true);
 		
 		}
-		
-		
 	}
 	public String getSavedTilesSourcePath() {
 		return Prefs.getInstance().getTilesSourcePath();

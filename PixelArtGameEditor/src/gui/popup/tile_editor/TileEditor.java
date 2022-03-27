@@ -7,7 +7,7 @@ import java.io.InputStream;
 
 import controller.PrefsController;
 import controller.ProjectController;
-import gui.TilesEditor.TilesManager;
+import gui.tiles.tiles_editor.TilesManager;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -151,7 +151,7 @@ public class TileEditor extends BorderPane {
 				tile = ProjectController.getInstance().addTile(tilesSourcePath, X, Y, type);
 				TileEditor.this.setVisible(false);
 				try {
-					TilesManager.getInstance().tilesColumnRefresh();
+					TilesManager.getInstance().getTilesLibrary().refreshAll();
 					PrefsController.getInstance().setConfirm(true);
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -165,7 +165,7 @@ public class TileEditor extends BorderPane {
 					ProjectController.getInstance().removeTile(getTile());
 					
 					try {
-						TilesManager.getInstance().tilesColumnRefresh();
+						TilesManager.getInstance().getTilesLibrary().refreshAll();
 					} catch (FileNotFoundException e) {
 						e.printStackTrace();
 					}
