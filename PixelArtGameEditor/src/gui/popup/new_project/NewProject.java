@@ -5,10 +5,12 @@ import java.io.IOException;
 
 import controller.PrefsController;
 import controller.ProjectController;
+import gui.Tools.FieldValidator;
 import gui.tiles.tiles_editor.TilesManager;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -18,9 +20,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import model.properties.ProjectProperties;
 
-public class NewProject extends BorderPane{
+public class NewProject extends Stage implements FieldValidator{
 	
 	private static NewProject instance;
 	private VBox container;
@@ -34,6 +38,7 @@ public class NewProject extends BorderPane{
 	
 	private NewProject() {
 		super();
+		initModality(Modality.APPLICATION_MODAL);
 		container = new VBox();
 		projectNameLabel = new Label("Project name :");
 		projectNameTextField = new TextField();
@@ -54,10 +59,13 @@ public class NewProject extends BorderPane{
 				cancelButton
 				);
 		cancelButton.setVisible(false);
+		cancelButton.setOnAction(e -> close());
 		
 		setAction();
 		
-		setCenter(container);
+		
+		Scene scene1= new Scene(container, 300, 250);
+		setScene(scene1);
 		
 		setStyle();
 		
@@ -68,19 +76,12 @@ public class NewProject extends BorderPane{
 		container.setPrefSize(300, 300);
 		container.setSpacing(10);
 		
-		setStyle("-fx-background-color: whitesmoke");
+		//setStyle("-fx-background-color: whitesmoke");
 	}
 	public void setCancelButtonVisibility(boolean bool) {
 		cancelButton.setVisible(bool);
 	}
 	private void setAction() {
-		cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent arg0) {
-				setVisible(false);
-			}
-		});
 		createButton.setOnAction(new EventHandler<ActionEvent>() {
 			
 			@Override
@@ -106,7 +107,11 @@ public class NewProject extends BorderPane{
 					directoryChooser.setTitle("Choose emplacement project");
 					
 					File file = directoryChooser.showDialog(null);
-					String path = file.getAbsolutePath() + "\\" + projectNameTextField.getText() + ".mpag";
+					File newDirectory = new File(file.getAbsolutePath() + "\\" + projectNameTextField.getText());
+					newDirectory.mkdir();
+					File mapsDirectory = new File(newDirectory.getAbsolutePath() + "\\maps");
+					mapsDirectory.mkdir();
+					String path = newDirectory.getAbsolutePath() + "\\" + projectNameTextField.getText() + ".mpag";
 					File newProject = new File(path);
 					try {
 						ProjectController.getInstance().saveToFile(newProject);
@@ -115,9 +120,8 @@ public class NewProject extends BorderPane{
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					NewProject.this.setVisible(false);
 				}
-				
+				close();
 			}
 		});
 		
@@ -132,14 +136,14 @@ public class NewProject extends BorderPane{
 					try {
 						ProjectController.getInstance().loadFromFile(file);
 						PrefsController.getInstance().saveProjectPath(file.getAbsolutePath());
+						PrefsController.getInstance().saveMapsPath(file.getParent() + "\\maps" );
 						TilesManager.getInstance().tilesSourceThumbnailColumnRefresh();
 						TilesManager.getInstance().getTilesLibrary().refreshAll();
+						close();
 					} catch (IOException e1) {
 						System.err.println(e1.getMessage());
 					}
 				}
-
-				NewProject.this.setVisibility(false);
 			}
 		});
 	}
@@ -150,19 +154,7 @@ public class NewProject extends BorderPane{
 			return true;
 		}
 	}
-	private boolean textIsValid(String str) {
-		// special char a completer
-		CharSequence[] speChar = {"/", " ", "\\", "&", "\"", "|"}; 
-		for(CharSequence c : speChar) {
-			if(str.contains(c)) {
-				return false;
-			}
-		}
-		if(str.length() <= 1 || str == null) {
-			return false;
-		}
-		return true;
-	}
+	
 	public static NewProject getInstance() {
 		if(instance == null) {
 			instance = new NewProject();
@@ -170,7 +162,7 @@ public class NewProject extends BorderPane{
 		}
 		return instance;
 	}
-	public void setVisibility(boolean bool) {
-		setVisible(bool);
+	public void display() {
+		showAndWait();
 	}
 }

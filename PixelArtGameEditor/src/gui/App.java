@@ -7,6 +7,8 @@ import java.util.Optional;
 
 import controller.PrefsController;
 import controller.ProjectController;
+import gui.map.library.MapLibrary;
+import gui.map.map_editor.MapManager;
 import gui.tiles.tiles_editor.TilesManager;
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -35,7 +37,7 @@ public class App extends Application{
 		PrefsController.getInstance().openAutoProject();
 		TilesManager.getInstance().tilesSourceThumbnailColumnRefresh();
 		TilesManager.getInstance().getTilesLibrary().refreshAll();
-		//TilesManager.getInstance().tilesColumnRefresh();
+		//MapLibrary.getInstance().refresh();
 		
 		stage.getScene().getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, new EventHandler<WindowEvent>() {
 			@Override

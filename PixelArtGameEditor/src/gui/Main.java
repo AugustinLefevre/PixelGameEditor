@@ -2,6 +2,7 @@ package gui;
 
 import java.io.IOException;
 
+import gui.map.library.MapLibrary;
 import gui.popup.new_project.NewProject;
 import gui.popup.tile_editor.TileEditor;
 import javafx.application.Platform;
@@ -24,14 +25,14 @@ public class Main {
 			
 			@Override
 			public void run() {
-				//root.getChildren().add(TilesManager.getInstance());
-				//root.getChildren().add(MenuPanel.getInstance().getMenuBar());
 				
 		        VBox vbox = new VBox();
+		        //root.getChildren().add(NewProject.getInstance());
 		        vbox.getChildren().addAll(MenuPanel.getInstance(), AppTab.getInstance());
 		        root.getChildren().addAll(vbox);
-				root.getChildren().add(NewProject.getInstance());
-				root.getChildren().add(TileEditor.getInstance());
+				
+				//root.getChildren().add(TileEditor.getInstance());
+				//MapLibrary.getInstance().refresh();
 			}
 		});
 	    

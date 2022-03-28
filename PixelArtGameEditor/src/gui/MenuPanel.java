@@ -92,7 +92,7 @@ public class MenuPanel extends MenuBar{
 
 			@Override
 			public void handle(ActionEvent arg0) {
-				NewProject.getInstance().setVisibility(true);
+				NewProject.getInstance().display();
 				NewProject.getInstance().setCancelButtonVisibility(true);
 				
 			}

@@ -14,7 +14,7 @@ public class TilesLibraryEditable extends TilesLibrary {
 		thumbnail.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent arg0) {
-				TileEditor.getInstance(thumbnail.tile).setVisible(true);
+				TileEditor.getInstance(thumbnail.tile).display();
 			}
 		});
 	}

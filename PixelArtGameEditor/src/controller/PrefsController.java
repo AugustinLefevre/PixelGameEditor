@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import gui.tiles.tiles_editor.TilesManager;
+import gui.map.library.MapLibrary;
 import gui.popup.new_project.NewProject;
 import model.properties.Prefs;
 import data.PreferenciesDB;
@@ -34,17 +35,18 @@ public class PrefsController {
 			String projectPath = PreferenciesDB.getInstance().loadPrefs().getProjectPath();
 			this.prefsFile = new File(projectPath);
 			if(this.prefsFile != null) {
-				NewProject.getInstance().setVisibility(false);
 				ProjectController.getInstance().loadFromFile(this.prefsFile);
 				saveProjectPath(projectPath);
+				saveMapsPath(this.prefsFile.getParent() + "\\maps");
 				if(PreferenciesDB.getInstance().loadPrefs().getTilesSourcePath() != null) {
 					saveTilesSourcePath(PreferenciesDB.getInstance().loadPrefs().getTilesSourcePath());
 				}
 				TilesManager.getInstance().tilesSourceThumbnailColumnRefresh();
 				TilesManager.getInstance().getTilesLibrary().refreshAll();
+				MapLibrary.getInstance().refresh();
 			}
 		}else {
-			NewProject.getInstance().setVisible(true);
+			NewProject.getInstance().display();
 		
 		}
 	}
@@ -67,5 +69,12 @@ public class PrefsController {
 	}
 	public String getProjectPath() {
 		return Prefs.getInstance().getProjectPath();
+	}
+	public void saveMapsPath(String path) throws IOException {
+		Prefs.getInstance().setMapPath(path);
+		PreferenciesDB.getInstance().savePrefs(Prefs.getInstance());
+	}
+	public String getMapsPath() {
+		return Prefs.getInstance().getMapsPath();
 	}
 }

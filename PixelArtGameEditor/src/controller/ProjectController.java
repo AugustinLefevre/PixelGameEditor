@@ -9,6 +9,7 @@ import model.project.Project;
 import model.properties.ProjectProperties;
 import data.ProjectData;
 import gui.tiles.tiles_editor.TilesManager;
+import gui.map.library.MapLibrary;
 import gui.popup.tile_editor.TileEditor;
 import model.tiles.Tile;
 import model.tiles.TilesSource;
@@ -51,6 +52,7 @@ public class ProjectController {
 	public void saveToFile(File file) throws IOException {
 		db.saveToFile(file);
 		PrefsController.getInstance().saveProjectPath(file.getAbsolutePath());
+		PrefsController.getInstance().saveMapsPath(file.getParent() + "\\maps");
 	}
 	public void loadFromFile(File file) throws IOException {
 		db.loadFromFile(file);
@@ -81,6 +83,7 @@ public class ProjectController {
 		try {
 			TilesManager.getInstance().tilesSourceThumbnailColumnRefresh();
 			TilesManager.getInstance().getTilesLibrary().refreshAll();
+			MapLibrary.getInstance().refresh();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}

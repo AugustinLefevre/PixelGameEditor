@@ -1,7 +1,8 @@
 package gui.map.map_editor;
 
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import model.tiles.Tile;
 
@@ -19,10 +20,8 @@ public class MapManager extends BorderPane {
 		super();
 		tilesLibrary = new TilesLibrarySelectable();
 		setLeft(tilesLibrary);
+		setCenter(MapView.getInstance());
 		setRight(MapLibrary.getInstance());
-//		ScrollPane test = new ScrollPane();
-//		test.setContent(new Label("hey"));
-		//setRight(test);
 		try {
 			tilesLibrary.refresh();
 		} catch (FileNotFoundException e) {
@@ -40,5 +39,8 @@ public class MapManager extends BorderPane {
 	}
 	public static void setCurrentTile(Tile tile) {
 		currentTile = tile;
+	}
+	public void update(Image img) {
+		MapView.getInstance().displayMap(img);
 	}
 }

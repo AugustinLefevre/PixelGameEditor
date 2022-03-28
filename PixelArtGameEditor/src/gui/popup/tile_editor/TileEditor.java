@@ -12,6 +12,7 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
@@ -20,11 +21,12 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import model.properties.ProjectProperties;
 import model.tiles.Tile;
 import model.tiles.TilesType;
 
-public class TileEditor extends BorderPane {
+public class TileEditor extends Stage {
 	private static TileEditor instance;
 	private Button up;
 	private Button down;
@@ -53,17 +55,18 @@ public class TileEditor extends BorderPane {
 		up = new Button();
 		down = new Button();
 		canvas = new Canvas(250, 250);
-		validate = new Button("validate");
-		delete = new Button("delete");
+		validate = new Button("Validate");
+		delete = new Button("Delete");
 		tileTypeSelector = new ComboBox<TilesType>();
 		
 		
 		
 		gc = canvas.getGraphicsContext2D();
 		gc.setImageSmoothing(false);
-		setStyle("-fx-background-color: whitesmoke");
-		setLeft(leftDisplayer);
-		setRight(rightDisplayer);
+		//setStyle("-fx-background-color: whitesmoke");
+		BorderPane content = new BorderPane();
+		content.setLeft(leftDisplayer);
+		content.setRight(rightDisplayer);
 		
 		String path = System.getProperty("user.dir") + "\\resources";
 		InputStream arrowLeftStream;
@@ -104,9 +107,12 @@ public class TileEditor extends BorderPane {
 			
 			
 			tileTypeSelector.setItems(FXCollections.observableArrayList(TilesType.values()));
-			rightDisplayer.getChildren().addAll(tileTypeSelector, validate, delete);
+			Button cancelButton = new Button("Cancel");
+			cancelButton.setOnAction(e -> close());
+			rightDisplayer.getChildren().addAll(tileTypeSelector, validate, delete, cancelButton);
 			setActions();
-			setVisible(false);
+			Scene scene1= new Scene(content, 700, 500);
+			setScene(scene1);
 		
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -149,13 +155,13 @@ public class TileEditor extends BorderPane {
 			public void handle(ActionEvent arg0) {
 				TilesType type = (tileTypeSelector.getValue() == null)? TilesType.simple : tileTypeSelector.getValue();
 				tile = ProjectController.getInstance().addTile(tilesSourcePath, X, Y, type);
-				TileEditor.this.setVisible(false);
 				try {
 					TilesManager.getInstance().getTilesLibrary().refreshAll();
 					PrefsController.getInstance().setConfirm(true);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				close();
 			}
 		});
 		delete.setOnAction(new EventHandler<ActionEvent>() {
@@ -170,8 +176,7 @@ public class TileEditor extends BorderPane {
 						e.printStackTrace();
 					}
 				}
-				TileEditor.this.setVisible(false);
-				
+				close();
 			}
 		});
 	}
@@ -228,13 +233,16 @@ public class TileEditor extends BorderPane {
 	public static String getTilesSourcePath() {
 		return tilesSourcePath;
 	}
-	public static int getX() {
-		return X;
-	}
-	public static int getY() {
-		return Y;
-	}
+//	public static int getX() {
+//		return X;
+//	}
+//	public static int getY() {
+//		return Y;
+//	}
 	public Tile getTile() {
 		return tile;
+	}
+	public void display() {
+		showAndWait();
 	}
 }

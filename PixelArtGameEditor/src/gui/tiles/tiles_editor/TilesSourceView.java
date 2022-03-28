@@ -68,7 +68,7 @@ class TilesSourceView extends Canvas{
 							TilesSourceView.this.currentSource,
 							TilesSourceViewCursor.getInstance().getPosInTilesSourceX(),
 							TilesSourceViewCursor.getInstance().getPosInTilesSourceY())
-					.setVisible(true);
+					.display();
 				}
 				
 			}
@@ -320,7 +320,10 @@ class TilesSourceView extends Canvas{
 		return (int) (this.image.getHeight() * this.pxSize);
 		
 	}
-	public void setSize() {
+	/**
+	 * set Size of  the displayer
+	 */
+	private void setSize() {
 		
 		int width = (int) Main.getInstance().getScene().getWindow().getWidth() - 200;
 		int height = (int) Main.getInstance().getScene().getWindow().getHeight() - 120;
