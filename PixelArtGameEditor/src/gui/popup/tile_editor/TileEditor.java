@@ -21,6 +21,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.properties.ProjectProperties;
 import model.tiles.Tile;
@@ -48,6 +49,7 @@ public class TileEditor extends Stage {
 	
 	public TileEditor() {
 		super();
+		initModality(Modality.APPLICATION_MODAL);
 		leftDisplayer = new BorderPane();
 		rightDisplayer = new VBox(20);
 		left = new Button();
